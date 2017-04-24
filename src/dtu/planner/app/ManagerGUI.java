@@ -14,8 +14,8 @@ public class ManagerGUI {
 
     private JButton addActivityButton;
     private JButton removeActivityButton;
-    private JButton assignActivityButton;
-    private JButton reassignActivityButton;
+    private JButton assignDeveloperButton;
+    private JButton reassignDeveloperButton;
 
     private final Object[] developerColumnNames = new Object[]{"initials"};
     private static DefaultTableModel developerTableModel;
@@ -24,6 +24,7 @@ public class ManagerGUI {
     private static Object[] activityColumnNames = new Object[]{"activity", "participants"};
     private static DefaultTableModel activityTableModel = new DefaultTableModel(activityColumnNames, 0);
     private JTable activityTable;
+    private JTabbedPane managerTab;
 
     ManagerGUI(String initials) {
         this.managerInitials = initials;
@@ -46,7 +47,7 @@ public class ManagerGUI {
             }
         });
 
-        assignActivityButton.addActionListener(e -> {
+        assignDeveloperButton.addActionListener(e -> {
             String activityName = (String) activityTable.getValueAt(activityTable.getSelectedRow(), 0);
             String participantInitials = (String) JOptionPane.showInputDialog(managerPanel,
                     "Select Developer",
@@ -57,50 +58,38 @@ public class ManagerGUI {
                     null);
 
             if (participantInitials != null) {
-                app.getDeveloperBy(managerInitials).asManager.assignActivity(activityName, participantInitials);
+                app.getDeveloperBy(managerInitials).asManager.assignDeveloper(activityName, participantInitials);
                 activityTable.setValueAt(
                         app.getProjectBy(projectName).getActivityBy(activityName).getParticipants().size(),
                         activityTable.getSelectedRow(), 1);
             }
         });
 
-        reassignActivityButton.addActionListener(e -> {
-
-        });
-
-        /*
-        assignActivityButton.addActionListener(e -> {
-            String name = (String) projectTable.getValueAt(projectTable.getSelectedRow(), 0);
-            String managerInitials = (String) JOptionPane.showInputDialog(adminPanel,
+        reassignDeveloperButton.addActionListener(e -> {
+            String activityName = (String) activityTable.getValueAt(activityTable.getSelectedRow(), 0);
+            String participantInitials = (String) JOptionPane.showInputDialog(managerPanel,
                     "Select Developer",
                     "Select Developer", //
                     JOptionPane.INFORMATION_MESSAGE,
                     null,
-                    app.getInitialsOf(app.getDevelopers()),
+                    app.getProjectBy(this.projectName).getActivityBy(activityName).getParticipants().toArray(),
                     null);
 
-            if (managerInitials != null) {
-                app.getProjectBy(name).assignParticipant(managerInitials);
-                projectTable.setValueAt(app.getProjectBy(name).getParticipants().size(),
-                        projectTable.getSelectedRow(), 1);
+            if (participantInitials != null) {
+                if (JOptionPane.showConfirmDialog(managerPanel, "Reassign participant: " + participantInitials,
+                        "WARNING", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                    app.getDeveloperBy(managerInitials).asManager.reassignDeveloper(activityName, participantInitials);
+                    activityTable.setValueAt(
+                            app.getProjectBy(projectName).getActivityBy(activityName).getParticipants().size(),
+                            activityTable.getSelectedRow(), 1);
+                }
             }
+
         });
 
-        reassignActivityButton.addActionListener(e -> {
-            String name = (String) projectTable.getValueAt(projectTable.getSelectedRow(),0);
-            String managerInitials = (String) JOptionPane.showInputDialog(adminPanel,
-                    "Reassign Developer",
-                    "Reassign developer",
-                    JOptionPane.INFORMATION_MESSAGE,
-                    null,
-                    app.getProjectBy(name).getParticipants().toArray(),
-                    null);
 
-            app.getProjectBy(name).reassignParticipant(managerInitials);
-            projectTable.setValueAt(app.getProjectBy(name).getParticipants().size(),
-                    projectTable.getSelectedRow(), 1);
-        });
-        */
+
+
     }
 
     private void setup() {
@@ -113,7 +102,7 @@ public class ManagerGUI {
         devFrame.setLocationRelativeTo(null);
         devFrame.setVisible(true);
 
-        developerTableModel =  new DefaultTableModel(
+        developerTableModel = new DefaultTableModel(
                 app.getDeveloperBy(managerInitials).asManager.getParticipantsData(), developerColumnNames);
         developerTable.setModel(developerTableModel);
 

@@ -12,16 +12,16 @@ class Project {
     //private String projectNumber;
 
     private String manager;
-    private String projectName;
+    private String name;
     private List<String> participants = new ArrayList<>();
     private List<Activity> activities = new ArrayList<>();
 
     Project(String name) {
-        this.projectName = name;
+        this.name = name;
     }
 
-    String getProjectName() {
-        return projectName;
+    String getName() {
+        return name;
     }
 
     public String getManager() {
@@ -51,7 +51,7 @@ class Project {
     }
 
     void addActivity(String activity) {
-        activities.add(new Activity(activity, projectName));
+        activities.add(new Activity(activity, name));
     }
 
     void removeActivity(String activity) {

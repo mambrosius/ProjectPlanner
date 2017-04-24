@@ -39,9 +39,13 @@ public class AdministratorGUI {
         developerTable.setModel(developerTableModel);
 
         registerDeveloperButton.addActionListener(e -> {
-            String initials = JOptionPane.showInputDialog("Type Developer Initials");
-            app.admin.registerDeveloper(initials);
-            developerTableModel.addRow(new Object[] {initials});
+            String initials = JOptionPane.showInputDialog("Type Developer Initials").toLowerCase();
+            if (app.getInitialsOfDevelopers().contains(initials)) {
+                JOptionPane.showMessageDialog(null,  "\"" + initials + "\" already exists");
+            } else if (!initials.isEmpty()) {
+                app.admin.registerDeveloper(initials);
+                developerTableModel.addRow(new Object[] {initials});
+            }
         });
 
         unregisterDeveloperButton.addActionListener(e -> {
@@ -54,9 +58,14 @@ public class AdministratorGUI {
         });
 
         registerProjectButton.addActionListener(e -> {
-            String name = JOptionPane.showInputDialog("Write Project Name");
-            app.admin.registerProject(name);
-            projectTableModel.addRow(new Object[] {name, app.getProjectBy(name).getParticipants().size()});
+            String name = JOptionPane.showInputDialog("Write Project Name").toLowerCase();
+
+            if (app.getNamesOfProjects().contains(name)) {
+                JOptionPane.showMessageDialog(null, "\"" + name + "\" already exists");
+            } else if (!name.isEmpty()) {
+                app.admin.registerProject(name);
+                projectTableModel.addRow(new Object[] {name, app.getProjectBy(name).getParticipants().size()});
+            }
         });
 
         unregisterProjectButton.addActionListener(e -> {
@@ -75,7 +84,7 @@ public class AdministratorGUI {
                     "Select Developer", //
                     JOptionPane.INFORMATION_MESSAGE,
                     null,
-                    app.getInitialsOf(app.getDevelopers()),
+                    app.getInitialsOfDevelopers().toArray(),
                     null);
             if (initials != null) {
                 app.getProjectBy(name).assignParticipant(initials);

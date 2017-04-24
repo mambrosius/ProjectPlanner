@@ -48,7 +48,7 @@ public class ProjectTest extends ProjectTestSetup {
             assertEquals("BA", ppApp.getDeveloperBy("BA").getInitials());
         } catch (NotFoundException e) {
             assertEquals("\"BA\" was not found.", e.getMessage());
-            assertEquals("BA", e.getProjectName());
+            assertEquals("BA", e.getName());
         }
 
         try {
@@ -56,7 +56,7 @@ public class ProjectTest extends ProjectTestSetup {
             fail("A NotFoundException should have been thrown.");
         } catch (NotFoundException e) {
             assertEquals("\"MA\" was not found.", e.getMessage());
-            assertEquals("MA", e.getProjectName());
+            assertEquals("MA", e.getName());
         }
     }
 

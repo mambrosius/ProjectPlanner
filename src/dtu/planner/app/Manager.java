@@ -16,12 +16,15 @@ class Manager {
         return projectName;
     }
 
-    void assignActivity(String activityName, String initials) {
-        app.getDeveloperBy(initials).addActivity(activityName);
-        app.getProjectBy(projectName).getActivityBy(activityName).addParticipant(initials);
+    void assignDeveloper(String activityName, String initials) {
+        if (app.getProjectBy(projectName).getActivityBy(activityName) != null) {
+            app.getProjectBy(projectName).getActivityBy(activityName).addParticipant(initials);
+            app.getDeveloperBy(initials).addActivity(activityName);
+        }
     }
 
-    void reassignActivity(String activityName, String initials) {
+    void reassignDeveloper(String activityName, String initials) {
+        app.getProjectBy(projectName).getActivityBy(activityName).removeParticipant(initials);
         app.getDeveloperBy(initials).removeActivity(activityName);
     }
 
@@ -40,7 +43,6 @@ class Manager {
     Object[][] getParticipantsData() {
 
         List<String> participants = app.getProjectBy(projectName).getParticipants();
-        System.out.print(participants.size());
         Object[][] data = new Object[participants.size()][1];
 
         for (int i = 0; i < participants.size(); i++) {

@@ -13,7 +13,7 @@ public class ProjectPlanner {
     List<Developer> developers;
 
     public static void main(String[] args) {
-        new PositionSelectGUI();
+        new LoginGUI();
     }
 
     private ProjectPlanner() {
@@ -22,9 +22,17 @@ public class ProjectPlanner {
         this.developers = new ArrayList<>();
     }
 
+    List<String> getNamesOfProjects() {
+        List<String> namesOfProjects = new ArrayList<>();
+        for (Project project : projects) {
+            namesOfProjects.add(project.getName());
+        }
+        return namesOfProjects;
+    }
+
     Project getProjectBy(String name) {
         for (Project project : projects) {
-            if (project.getProjectName().equals(name)) {
+            if (project.getName().equals(name)) {
                 return project;
             }
         }
@@ -35,14 +43,12 @@ public class ProjectPlanner {
         return developers;
     }
 
-    String[] getInitialsOf(List<Developer> developers) {
-
-        String[] initials = new String[developers.size()];
-
-        for (int i = 0; i < developers.size(); i++) {
-            initials[i] = developers.get(i).getInitials();
+    List<String> getInitialsOfDevelopers() {
+        List<String> initialsOfDevelopers = new ArrayList<>();
+        for (Developer developer : developers) {
+            initialsOfDevelopers.add(developer.getInitials());
         }
-        return initials;
+        return initialsOfDevelopers;
     }
 
     Developer getDeveloperBy(String initials) {
