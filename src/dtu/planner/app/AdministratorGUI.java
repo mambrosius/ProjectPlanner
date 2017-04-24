@@ -41,14 +41,11 @@ public class AdministratorGUI {
         registerDeveloperButton.addActionListener(e -> {
             String initials = JOptionPane.showInputDialog("Type Developer Initials");
             app.admin.registerDeveloper(initials);
-
-            Object[] devTableData = new Object[] {initials};
-            developerTableModel.addRow(devTableData);
+            developerTableModel.addRow(new Object[] {initials});
         });
 
         unregisterDeveloperButton.addActionListener(e -> {
             String initials = (String) developerTable.getValueAt(developerTable.getSelectedRow(), 0);
-
             if (JOptionPane.showConfirmDialog(adminPanel, "Unregister: " + initials, "WARNING",
                     JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                 app.admin.unregisterDeveloper(initials);
@@ -59,14 +56,11 @@ public class AdministratorGUI {
         registerProjectButton.addActionListener(e -> {
             String name = JOptionPane.showInputDialog("Write Project Name");
             app.admin.registerProject(name);
-
-            Object[] projectTableData = new Object[] {name, app.getProjectBy(name).getParticipants().size()};
-            projectTableModel.addRow(projectTableData);
+            projectTableModel.addRow(new Object[] {name, app.getProjectBy(name).getParticipants().size()});
         });
 
         unregisterProjectButton.addActionListener(e -> {
             String name = (String) projectTable.getValueAt(projectTable.getSelectedRow(), 0);
-
             if (JOptionPane.showConfirmDialog(adminPanel, "Unregister: " + name, "WARNING",
                     JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                 app.admin.unregisterProject(name);
@@ -83,7 +77,6 @@ public class AdministratorGUI {
                     null,
                     app.getInitialsOf(app.getDevelopers()),
                     null);
-
             if (initials != null) {
                 app.getProjectBy(name).assignParticipant(initials);
                 projectTable.setValueAt(app.getProjectBy(name).getParticipants().size(),
@@ -100,17 +93,14 @@ public class AdministratorGUI {
                     null,
                     app.getProjectBy(name).getParticipants().toArray(),
                     null);
-
             app.getProjectBy(name).reassignParticipant(initials);
             projectTable.setValueAt(app.getProjectBy(name).getParticipants().size(),
                     projectTable.getSelectedRow(), 1);
         });
 
         assignManagerButton.addActionListener(e -> {
-
             String projectName = (String) projectTable.getValueAt(projectTable.getSelectedRow(),0);
             Project project = app.getProjectBy(projectName);
-
             if (project.getManager() == null) {
                 String initials = (String) JOptionPane.showInputDialog(adminPanel,
                         "Select Manager",
@@ -128,10 +118,8 @@ public class AdministratorGUI {
         });
 
         reassignManagerButton.addActionListener(e -> {
-
             String name = (String) projectTable.getValueAt(projectTable.getSelectedRow(),0);
             String initials = app.getProjectBy(name).getManager();
-
             if (JOptionPane.showConfirmDialog(adminPanel, "Reassign manager: " + initials, "WARNING",
                     JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                 app.getDeveloperBy(initials).reassignManagerTitle();

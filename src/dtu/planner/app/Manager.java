@@ -16,20 +16,13 @@ class Manager {
         return projectName;
     }
 
-    void addActivity(String activity) {
-        app.getProjectBy(projectName).addActivity(activity);
+    void assignActivity(String activityName, String initials) {
+        app.getDeveloperBy(initials).addActivity(activityName);
+        app.getProjectBy(projectName).getActivityBy(activityName).addParticipant(initials);
     }
 
-    void removeActivity(String activity) {
-        app.getProjectBy(projectName).removeActivity(activity);
-    }
-
-    void assignActivity(String activity, String initials) {
-
-    }
-
-    void reassignActivity(String activity, String initials) {
-
+    void reassignActivity(String activityName, String initials) {
+        app.getDeveloperBy(initials).removeActivity(activityName);
     }
 
     void setStart(String activity, Calendar date) {

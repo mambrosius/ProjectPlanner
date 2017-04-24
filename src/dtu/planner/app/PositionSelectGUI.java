@@ -11,7 +11,9 @@ public class PositionSelectGUI {
     private JButton adminButton;
 
     PositionSelectGUI() {
+
         setup();
+
         adminButton.addActionListener(e -> {
             String password = JOptionPane.showInputDialog("Enter Password");
             if (password.equals("admin")) {
@@ -30,26 +32,23 @@ public class PositionSelectGUI {
                     app.getInitialsOf(app.getDevelopers()),
                     null);
 
-            if (app.getDeveloperBy(initials).isManager()) {
-
-
-
-                String position = (String) JOptionPane.showInputDialog(mainPanel,
-                        "login as",
-                        "Login as",
-                        JOptionPane.INFORMATION_MESSAGE,
-                        null,
-                        new String[] {"developer", "manager"},
-                        null);
-
-                if (position.equals("manager")) {
-                    new ManagerGUI(initials);
-                } else if (position.equals("developer")) {
+            if (initials != null) {
+                if (!app.getDeveloperBy(initials).isManager()) {
                     new DeveloperGUI(initials);
+                } else {
+                    String selectedPosition = (String) JOptionPane.showInputDialog(mainPanel,
+                            "login as",
+                            "Login as",
+                            JOptionPane.INFORMATION_MESSAGE,
+                            null,
+                            new String[] {"developer", "manager"},
+                            null);
+                    if (selectedPosition.equals("manager")) {
+                        new ManagerGUI(initials);
+                    } else if (selectedPosition.equals("developer")) {
+                        new DeveloperGUI(initials);
+                    }
                 }
-
-            } else if (initials != null) {
-                new DeveloperGUI(initials);
             }
         });
     }

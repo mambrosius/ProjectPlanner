@@ -7,8 +7,8 @@ import static org.junit.Assert.*;
 public class ProjectPlannerTest extends ProjectPlannerTestSetup {
 /*
     @Test
-    public void getName() throws Exception {
-        assertEquals("Software Huset", ppApp.getName());
+    public void getProjectName() throws Exception {
+        assertEquals("Software Huset", ppApp.getProjectName());
     }
 
     // <editor-fold desc = "developer related tests">
@@ -49,7 +49,7 @@ public class ProjectPlannerTest extends ProjectPlannerTestSetup {
             assertEquals("BA", ppApp.getDeveloperBy("BA").getInitials());
         } catch (NotFoundException e) {
             assertEquals("\"BA\" was not found.", e.getMessage());
-            assertEquals("BA", e.getName());
+            assertEquals("BA", e.getProjectName());
         }
 
         try {
@@ -57,7 +57,7 @@ public class ProjectPlannerTest extends ProjectPlannerTestSetup {
             fail("A NotFoundException should have been thrown.");
         } catch (NotFoundException e) {
             assertEquals("\"MA\" was not found.", e.getMessage());
-            assertEquals("MA", e.getName());
+            assertEquals("MA", e.getProjectName());
         }
     }
     // </editor-fold>
@@ -97,18 +97,18 @@ public class ProjectPlannerTest extends ProjectPlannerTestSetup {
         ppApp.registerProject("Project Planner");
         ppApp.registerProject("Bachelor Thesis");
         try {
-            assertEquals("Bachelor Thesis", ppApp.getProjectBy("Bachelor Thesis").getName());
+            assertEquals("Bachelor Thesis", ppApp.getProjectBy("Bachelor Thesis").getProjectName());
         } catch(NotFoundException e) {
             assertEquals("\"Bachelor Thesis\" was not found.", e.getMessage());
-            assertEquals("Bachelor Thesis", e.getName());
+            assertEquals("Bachelor Thesis", e.getProjectName());
         }
 
         try {
-            assertEquals("Project Planner", ppApp.getProjectBy("Project lanner").getName());
+            assertEquals("Project Planner", ppApp.getProjectBy("Project lanner").getProjectName());
             fail("A NotFoundException should have been thrown.");
         } catch (NotFoundException e) {
             assertEquals("\"Project lanner\" was not found.", e.getMessage());
-            assertEquals("Project lanner", e.getName());
+            assertEquals("Project lanner", e.getProjectName());
         }
     }
     // </editor-fold>

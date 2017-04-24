@@ -7,14 +7,14 @@ import static dtu.planner.app.ProjectPlanner.app;
 
 class Developer {
 
-    private String initials;
     Manager asManager;
+
+    private String initials;
     //private Double checkIn;
     //private Double checkOut;
     //private Double unregisteredHours;
     //private List<Absence> absences;
     private List<String> activityNames = new ArrayList<>();
-
 
     Developer(String initials) {
         this.initials = initials;
@@ -38,14 +38,6 @@ class Developer {
         return asManager != null;
     }
 
-    void assignActivity(String activity) {
-        activityNames.add(activity);
-    }
-
-    void reassignActivity(String activity) {
-        activityNames.remove(activity);
-    }
-
     Object[][] getActivityData() {
 
         Object[][] data = new Object[activityNames.size()][1];
@@ -55,6 +47,15 @@ class Developer {
         }
         return data;
     }
+
+    void addActivity(String activityName) {
+        this.activityNames.add(activityName);
+    }
+
+    void removeActivity(String activityName) {
+        this.activityNames.remove(activityName);
+    }
+
 
     /*
     Boolean isAbsent(Calendar date) {

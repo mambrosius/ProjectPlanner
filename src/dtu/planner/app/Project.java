@@ -2,33 +2,34 @@ package dtu.planner.app;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 import static dtu.planner.app.ProjectPlanner.app;
 
 class Project {
 
-    private String name;
-    private String manager;
-    private List<String> participants = new ArrayList<>();
-    private List<Activity> activities = new ArrayList<>();
-
-
     //private deadline;
     //private startDate;
     //private String projectNumber;
 
-    /*
-    public void generateProjectNumber() {
-    }
-    */
+    private String manager;
+    private String projectName;
+    private List<String> participants = new ArrayList<>();
+    private List<Activity> activities = new ArrayList<>();
 
     Project(String name) {
-        this.name = name;
+        this.projectName = name;
     }
 
-    String getName() {
-        return name;
+    String getProjectName() {
+        return projectName;
+    }
+
+    public String getManager() {
+        return manager;
+    }
+
+    public void setManager(String manager) {
+        this.manager = manager;
     }
 
     List<String> getParticipants() {
@@ -49,28 +50,25 @@ class Project {
         return activities;
     }
 
+    void addActivity(String activity) {
+        activities.add(new Activity(activity, projectName));
+    }
+
+    void removeActivity(String activity) {
+        activities.remove(getActivityBy(activity));
+    }
+
     Activity getActivityBy(String name) {
         for (Activity activity : activities) {
-            if (activity.getName().equals(name)) {
+            if (activity.getActivityName().equals(name)) {
                 return activity;
             }
         }
         return null;
     }
 
-    public String getManager() {
-        return manager;
+    /*
+    public void generateProjectNumber() {
     }
-
-    public void setManager(String manager) {
-        this.manager = manager;
-    }
-
-    void addActivity(String activity) {
-        activities.add(new Activity(activity));
-    }
-
-    void removeActivity(String activity) {
-        activities.remove(getActivityBy(activity));
-    }
+    */
 }

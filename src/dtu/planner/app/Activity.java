@@ -5,20 +5,28 @@ import java.util.List;
 
 class Activity {
 
-    private String name;
+    private String projectName;
+    private String activityName;
     private List<String> participants = new ArrayList<>();
+
     //private startWeek;
     //private endWeek;
     //private workHoursEstimated;
     //private workHoursRemaining;
 
-    Activity(String name) {
-        this.name = name;
+    Activity(String activityName, String projectName) {
+        this.projectName = projectName;
+        this.activityName = activityName;
     }
 
-    String getName() {
-        return name;
+    public String getProjectName() {
+        return projectName;
     }
+
+    public String getActivityName() {
+        return activityName;
+    }
+
 
     List<String> getParticipants() {
         return participants;
@@ -29,8 +37,10 @@ class Activity {
     }
 
     void removeParticipant(String initials) {
-        participants.remove();
+        participants.remove(initials);
     }
+
+
 
     /*
     Integer getWeeksToDeadline() {
