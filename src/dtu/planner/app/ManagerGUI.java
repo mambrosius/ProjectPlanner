@@ -21,10 +21,9 @@ public class ManagerGUI {
     private static DefaultTableModel developerTableModel;
     private JTable developerTable;
 
-    private static Object[] activityColumnNames = new Object[]{"activity", "participants"};
+    private static Object[] activityColumnNames = new Object[]{"activity", "participants", "estimated work hours"};
     private static DefaultTableModel activityTableModel = new DefaultTableModel(activityColumnNames, 0);
     private JTable activityTable;
-    private JTabbedPane managerTab;
 
     ManagerGUI(String initials) {
         this.managerInitials = initials;
@@ -34,8 +33,12 @@ public class ManagerGUI {
 
         addActivityButton.addActionListener(e -> {
             String activityName = JOptionPane.showInputDialog("Name activity");
-            app.getProjectBy(projectName).addActivity(activityName);
-            activityTableModel.addRow(new Object[] {activityName});
+            if (app.getProjectBy(projectName).getNamesOfActivities().contains(activityName)) {
+                JOptionPane.showMessageDialog(null, "\"" + activityName + "\" already exists");
+            } else if (!activityName.isEmpty()) {
+                app.getProjectBy(projectName).addActivity(activityName);
+                activityTableModel.addRow(new Object[] {activityName});
+            }
         });
 
         removeActivityButton.addActionListener(e -> {
@@ -103,7 +106,7 @@ public class ManagerGUI {
         devFrame.setVisible(true);
 
         developerTableModel = new DefaultTableModel(
-                app.getDeveloperBy(managerInitials).asManager.getParticipantsData(), developerColumnNames);
+                app.getProjectBy(projectName).getDeveloperData(), developerColumnNames);
         developerTable.setModel(developerTableModel);
 
         activityTable.setModel(activityTableModel);

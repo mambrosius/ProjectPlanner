@@ -5,8 +5,11 @@ import java.util.List;
 
 class Activity {
 
+
+    private String name;
     private String projectName;
-    private String activityName;
+
+    private Double estimatedWorkHours;
     private List<String> participants = new ArrayList<>();
 
     //private startWeek;
@@ -16,17 +19,12 @@ class Activity {
 
     Activity(String activityName, String projectName) {
         this.projectName = projectName;
-        this.activityName = activityName;
+        this.name = activityName;
     }
 
     public String getProjectName() {
         return projectName;
     }
-
-    public String getActivityName() {
-        return activityName;
-    }
-
 
     List<String> getParticipants() {
         return participants;
@@ -38,6 +36,18 @@ class Activity {
 
     void removeParticipant(String initials) {
         participants.remove(initials);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Double getEstimatedWorkHours() {
+        return estimatedWorkHours;
+    }
+
+    public void setEstimatedWorkHours(Double estimatedWorkHours) {
+        this.estimatedWorkHours = estimatedWorkHours;
     }
 
 

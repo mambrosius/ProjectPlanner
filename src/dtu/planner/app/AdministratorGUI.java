@@ -10,16 +10,14 @@ public class AdministratorGUI {
     private JPanel adminPanel;
 
     // project
-    private static Object[] projectColumnNames = new Object[]{"name", "participants", "manager"};
-    private static DefaultTableModel projectTableModel = new DefaultTableModel(projectColumnNames, 0);
+    private DefaultTableModel projectTableModel;
     private JTable projectTable;
 
     private JButton registerProjectButton;
     private JButton unregisterProjectButton;
 
     // developer
-    private static Object[] developerColumnNames = new Object[]{"initials"};
-    private static DefaultTableModel developerTableModel = new DefaultTableModel(developerColumnNames, 0);
+    private DefaultTableModel developerTableModel;
     private JTable developerTable;
 
     private JButton registerDeveloperButton;
@@ -35,16 +33,14 @@ public class AdministratorGUI {
 
         setup();
 
-        projectTable.setModel(projectTableModel);
-        developerTable.setModel(developerTableModel);
-
         registerDeveloperButton.addActionListener(e -> {
             String initials = JOptionPane.showInputDialog("Type Developer Initials").toLowerCase();
             if (app.getInitialsOfDevelopers().contains(initials)) {
                 JOptionPane.showMessageDialog(null,  "\"" + initials + "\" already exists");
             } else if (!initials.isEmpty()) {
                 app.admin.registerDeveloper(initials);
-                developerTableModel.addRow(new Object[] {initials});
+                developerTableModel.setDataVector(
+                        app.getDeveloperDataOf(app.getDevelopers()), app.developerColumnNames);
             }
         });
 
@@ -53,7 +49,8 @@ public class AdministratorGUI {
             if (JOptionPane.showConfirmDialog(adminPanel, "Unregister: " + initials, "WARNING",
                     JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                 app.admin.unregisterDeveloper(initials);
-                developerTableModel.removeRow(developerTable.getSelectedRow());
+                developerTableModel.setDataVector(
+                        app.getDeveloperDataOf(app.getDevelopers()), app.developerColumnNames);
             }
         });
 
@@ -64,7 +61,7 @@ public class AdministratorGUI {
                 JOptionPane.showMessageDialog(null, "\"" + name + "\" already exists");
             } else if (!name.isEmpty()) {
                 app.admin.registerProject(name);
-                projectTableModel.addRow(new Object[] {name, app.getProjectBy(name).getParticipants().size()});
+                projectTableModel.setDataVector(app.getProjectDataOf(app.getProjects()), app.projectColumnNames);
             }
         });
 
@@ -73,7 +70,7 @@ public class AdministratorGUI {
             if (JOptionPane.showConfirmDialog(adminPanel, "Unregister: " + name, "WARNING",
                     JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                 app.admin.unregisterProject(name);
-                projectTableModel.removeRow(projectTable.getSelectedRow());
+                projectTableModel.setDataVector(app.getProjectDataOf(app.getProjects()), app.projectColumnNames);
             }
         });
 
@@ -88,8 +85,7 @@ public class AdministratorGUI {
                     null);
             if (initials != null) {
                 app.getProjectBy(name).assignParticipant(initials);
-                projectTable.setValueAt(app.getProjectBy(name).getParticipants().size(),
-                        projectTable.getSelectedRow(), 1);
+                projectTableModel.setDataVector(app.getProjectDataOf(app.getProjects()), app.projectColumnNames);
             }
         });
 
@@ -103,8 +99,7 @@ public class AdministratorGUI {
                     app.getProjectBy(name).getParticipants().toArray(),
                     null);
             app.getProjectBy(name).reassignParticipant(initials);
-            projectTable.setValueAt(app.getProjectBy(name).getParticipants().size(),
-                    projectTable.getSelectedRow(), 1);
+            projectTableModel.setDataVector(app.getProjectDataOf(app.getProjects()), app.projectColumnNames);
         });
 
         assignManagerButton.addActionListener(e -> {
@@ -118,10 +113,10 @@ public class AdministratorGUI {
                         null,
                         project.getParticipants().toArray(),
                         null);
-
                 if (initials != null) {
                     app.getDeveloperBy(initials).appointManager(projectName);
-                    projectTable.setValueAt(initials, projectTable.getSelectedRow(), 2);
+                    projectTableModel.setDataVector(app.getProjectDataOf(app.getProjects()), app.projectColumnNames);
+
                 }
             }
         });
@@ -132,12 +127,13 @@ public class AdministratorGUI {
             if (JOptionPane.showConfirmDialog(adminPanel, "Reassign manager: " + initials, "WARNING",
                     JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                 app.getDeveloperBy(initials).reassignManagerTitle();
-                projectTable.setValueAt(null, projectTable.getSelectedRow(), 2);
+                projectTableModel.setDataVector(app.getProjectDataOf(app.getProjects()), app.projectColumnNames);
             }
         });
     }
 
     private void setup() {
+
         JFrame adminFrame = new JFrame("Project Planner - Administrator");
         adminFrame.setContentPane(adminPanel);
         adminFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -145,6 +141,14 @@ public class AdministratorGUI {
         adminFrame.setSize(1000, 500);
         adminFrame.setLocationRelativeTo(null);
         adminFrame.setVisible(true);
+
+        projectTableModel = new DefaultTableModel(
+                app.getProjectDataOf(app.getProjects()), app.projectColumnNames);
+        projectTable.setModel(projectTableModel);
+
+        developerTableModel = new DefaultTableModel(
+                app.getDeveloperDataOf(app.getDevelopers()), app.developerColumnNames);
+        developerTable.setModel(developerTableModel);
     }
 }
 

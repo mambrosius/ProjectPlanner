@@ -15,6 +15,7 @@ class Project {
     private String name;
     private List<String> participants = new ArrayList<>();
     private List<Activity> activities = new ArrayList<>();
+    final String[] activityColumnNames = new String[]{"name", "participants", "estimated work hours"};
 
     Project(String name) {
         this.name = name;
@@ -46,7 +47,7 @@ class Project {
         participants.remove(initials);
     }
 
-    public List<Activity> getActivities() {
+    List<Activity> getActivities() {
         return activities;
     }
 
@@ -60,13 +61,38 @@ class Project {
 
     Activity getActivityBy(String name) {
         for (Activity activity : activities) {
-            if (activity.getActivityName().equals(name)) {
+            if (activity.getName().equals(name)) {
                 return activity;
             }
         }
         return null;
     }
 
+    List<String> getNamesOfActivities() {
+        List<String> namesOfActivities = new ArrayList<>();
+        for (Activity activity : activities) {
+            namesOfActivities.add(activity.getName());
+        }
+        return namesOfActivities;
+    }
+
+    Object[][] getDeveloperData() {
+        Object[][] data = new Object[participants.size()][1];
+        for (int i = 0; i < participants.size(); i++) {
+            data[i][0] = participants.get(i);
+        }
+        return data;
+    }
+    /*
+    Object[][] getActivityDataOf(List<Developer> developers) {
+        Object[][] developerData = new Object[developers.size()][app.developerColumnNames.length];
+        for (int i = 0; i < developers.size(); i++) {
+            developerData[i][0] = developers.get(i).getInitials();
+            developerData[i][1] = developers.get(i).getActivities().size();
+        }
+        return developerData;
+    }
+    */
     /*
     public void generateProjectNumber() {
     }

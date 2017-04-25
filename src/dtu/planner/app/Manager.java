@@ -40,17 +40,6 @@ class Manager {
 
     }
 
-    Object[][] getParticipantsData() {
-
-        List<String> participants = app.getProjectBy(projectName).getParticipants();
-        Object[][] data = new Object[participants.size()][1];
-
-        for (int i = 0; i < participants.size(); i++) {
-            data[i][0] = participants.get(i);
-        }
-        return data;
-    }
-
     void generateRapport(String project) {
 
     }

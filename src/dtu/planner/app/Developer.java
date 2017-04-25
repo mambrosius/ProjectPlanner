@@ -14,11 +14,12 @@ class Developer {
     //private Double checkOut;
     //private Double unregisteredHours;
     //private List<Absence> absences;
-    private List<String> activityNames = new ArrayList<>();
+    private List<String> activities = new ArrayList<>();
 
     Developer(String initials) {
         this.initials = initials;
     }
+
 
     String getInitials() {
         return initials;
@@ -40,20 +41,24 @@ class Developer {
 
     Object[][] getActivityData() {
 
-        Object[][] data = new Object[activityNames.size()][1];
+        Object[][] data = new Object[activities.size()][1];
 
-        for (int i = 0; i < activityNames.size(); i++) {
-            data[i][0] = activityNames.get(i);
+        for (int i = 0; i < activities.size(); i++) {
+            data[i][0] = activities.get(i);
         }
         return data;
     }
 
     void addActivity(String activityName) {
-        this.activityNames.add(activityName);
+        this.activities.add(activityName);
     }
 
     void removeActivity(String activityName) {
-        this.activityNames.remove(activityName);
+        this.activities.remove(activityName);
+    }
+
+    public List<String> getActivities() {
+        return activities;
     }
 
 
