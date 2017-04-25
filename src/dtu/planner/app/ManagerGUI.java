@@ -7,97 +7,109 @@ import static dtu.planner.app.ProjectPlanner.app;
 
 public class ManagerGUI {
 
-    private String managerInitials;
-    private String projectName;
+    private String manager;
+
+    //private Project project;
+    //private String projectName;
+    //private Project project = new Project(null);
 
     private JPanel managerPanel;
 
     private JButton addActivityButton;
     private JButton removeActivityButton;
     private JButton assignDeveloperButton;
-    private JButton reassignDeveloperButton;
+    private JButton unassignDeveloperButton;
 
-    private final Object[] developerColumnNames = new Object[]{"initials"};
     private static DefaultTableModel developerTableModel;
     private JTable developerTable;
 
-    private static Object[] activityColumnNames = new Object[]{"activity", "participants", "estimated work hours"};
-    private static DefaultTableModel activityTableModel = new DefaultTableModel(activityColumnNames, 0);
+    private static DefaultTableModel activityTableModel;
     private JTable activityTable;
 
-    ManagerGUI(String initials) {
-        this.managerInitials = initials;
-        this.projectName = app.getDeveloperBy(managerInitials).asManager.getProjectName();
+    //private static DefaultComboBoxModel respComboBoxModel;
+    private JComboBox<String> respBox;
+
+    ManagerGUI(String manager) {
+
+        this.manager = manager;
 
         setup();
 
         addActivityButton.addActionListener(e -> {
-            String activityName = JOptionPane.showInputDialog("Name activity");
-            if (app.getProjectBy(projectName).getNamesOfActivities().contains(activityName)) {
-                JOptionPane.showMessageDialog(null, "\"" + activityName + "\" already exists");
-            } else if (!activityName.isEmpty()) {
-                app.getProjectBy(projectName).addActivity(activityName);
-                activityTableModel.addRow(new Object[] {activityName});
-            }
+            String name = JOptionPane.showInputDialog("Name activity").toLowerCase();
+            if (!name.isEmpty())
+                if (getProject().addActivity(name))
+                    updateActivityTable();
+                else
+                    JOptionPane.showMessageDialog(managerPanel, "\"" + name + "\" already exists");
         });
+            /*
+            if (app.getProject(projectName).getNamesOfActivities().contains(activityName)) {
+
+            } else if (!activityName.isEmpty()) {
+                app.getProject(projectName).assignActivity(activityName);
+                activityTableModel.addRow(new Object[] {activityName});
+            }*/
 
         removeActivityButton.addActionListener(e -> {
-            String activityName = (String) activityTable.getValueAt(activityTable.getSelectedRow(),0);
-            if (JOptionPane.showConfirmDialog(managerPanel, "Remove: " + activityName, "WARNING",
+            String name = (String) activityTable.getValueAt(activityTable.getSelectedRow(),0);
+            if (JOptionPane.showConfirmDialog(managerPanel, "Remove: " + name, "WARNING",
                     JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                app.getProjectBy(projectName).removeActivity(activityName);
-                activityTableModel.removeRow(activityTable.getSelectedRow());
+                getProject().removeActivity(name);
+                updateActivityTable();
+                //activityTableModel.removeRow(activityTable.getSelectedRow());
             }
         });
 
         assignDeveloperButton.addActionListener(e -> {
-            String activityName = (String) activityTable.getValueAt(activityTable.getSelectedRow(), 0);
-            String participantInitials = (String) JOptionPane.showInputDialog(managerPanel,
+            String name = (String) activityTable.getValueAt(activityTable.getSelectedRow(), 0);
+            String initials = (String) JOptionPane.showInputDialog(managerPanel,
                     "Select Developer",
                     "Select Developer", //
                     JOptionPane.INFORMATION_MESSAGE,
                     null,
-                    app.getProjectBy(this.projectName).getParticipants().toArray(),
+                    app.getInitialsOfDevelopers(getProject().getDevelopers()).toArray(),
                     null);
 
-            if (participantInitials != null) {
-                app.getDeveloperBy(managerInitials).asManager.assignDeveloper(activityName, participantInitials);
+            if (initials != null) {
+                getProject().getManager().assignActivity(initials, name, getProject().getName());
+                updateActivityTable();
+                /*
+                app.getDeveloper(managerInitials).asManager.assignActivity(activityName, participantInitials);
                 activityTable.setValueAt(
-                        app.getProjectBy(projectName).getActivityBy(activityName).getParticipants().size(),
+                        app.getProject(projectName).getActivity(activityName).getDevelopers().size(),
                         activityTable.getSelectedRow(), 1);
+                        */
             }
         });
 
-        reassignDeveloperButton.addActionListener(e -> {
-            String activityName = (String) activityTable.getValueAt(activityTable.getSelectedRow(), 0);
-            String participantInitials = (String) JOptionPane.showInputDialog(managerPanel,
+        unassignDeveloperButton.addActionListener(e -> {
+            String name = (String) activityTable.getValueAt(activityTable.getSelectedRow(), 0);
+            String initials = (String) JOptionPane.showInputDialog(managerPanel,
                     "Select Developer",
                     "Select Developer", //
                     JOptionPane.INFORMATION_MESSAGE,
                     null,
-                    app.getProjectBy(this.projectName).getActivityBy(activityName).getParticipants().toArray(),
+                    app.getInitialsOfDevelopers(getProject().getActivity(name).getDevelopers()).toArray(),
                     null);
-
-            if (participantInitials != null) {
-                if (JOptionPane.showConfirmDialog(managerPanel, "Reassign participant: " + participantInitials,
+            if (initials != null) {
+                if (JOptionPane.showConfirmDialog(managerPanel, "Unassign developer: " + initials,
                         "WARNING", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                    app.getDeveloperBy(managerInitials).asManager.reassignDeveloper(activityName, participantInitials);
-                    activityTable.setValueAt(
-                            app.getProjectBy(projectName).getActivityBy(activityName).getParticipants().size(),
-                            activityTable.getSelectedRow(), 1);
+                    getProject().getManager().unassignActivity(initials, name, getProject().getName());
+                    updateActivityTable();
                 }
             }
-
         });
 
-
-
-
+        respBox.addActionListener(e -> {
+            updateActivityTable();
+            updateDeveloperTable();
+        });
     }
 
     private void setup() {
 
-        JFrame devFrame = new JFrame("Project Planner - " + managerInitials);
+        JFrame devFrame = new JFrame("Project Planner");
         devFrame.setContentPane(managerPanel);
         devFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         devFrame.pack();
@@ -105,10 +117,28 @@ public class ManagerGUI {
         devFrame.setLocationRelativeTo(null);
         devFrame.setVisible(true);
 
+        for (String resp : app.getDeveloper(manager).getNamesOfResp())
+            respBox.addItem(resp);
+        respBox.setPopupVisible(false);
+
         developerTableModel = new DefaultTableModel(
-                app.getProjectBy(projectName).getDeveloperData(), developerColumnNames);
+                Developer.getData(getProject().getDevelopers()), Developer.columnNames);
         developerTable.setModel(developerTableModel);
 
+        activityTableModel = new DefaultTableModel(
+                Activity.getData(getProject().getActivities()) , Activity.columnNames);
         activityTable.setModel(activityTableModel);
+    }
+
+    private Project getProject() {
+        return app.getProject(respBox.getSelectedItem().toString());
+    }
+
+    private void updateDeveloperTable() {
+        developerTableModel.setDataVector(Developer.getData(getProject().getDevelopers()), Developer.columnNames);
+    }
+
+    private void updateActivityTable() {
+        activityTableModel.setDataVector(Activity.getData(getProject().getActivities()), Activity.columnNames);
     }
 }

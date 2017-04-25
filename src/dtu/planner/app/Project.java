@@ -11,11 +11,13 @@ class Project {
     //private startDate;
     //private String projectNumber;
 
-    private String manager;
     private String name;
-    private List<String> participants = new ArrayList<>();
+    private Manager manager;
+
     private List<Activity> activities = new ArrayList<>();
-    final String[] activityColumnNames = new String[]{"name", "participants", "estimated work hours"};
+    private List<Developer> developers = new ArrayList<>();
+
+    static final String[] columnNames = new String[] {"name", "manager", "participants", "activities"};
 
     Project(String name) {
         this.name = name;
@@ -25,47 +27,62 @@ class Project {
         return name;
     }
 
-    public String getManager() {
+    void setManager(String initials) {
+        this.manager = new Manager(initials);
+    }
+
+    Manager getManager() {
         return manager;
     }
 
-    public void setManager(String manager) {
-        this.manager = manager;
+    String getManagerInitials() {
+        if (manager != null)
+            return manager.getInitials();
+        return null;
     }
 
-    List<String> getParticipants() {
-        return this.participants;
+    List<Developer> getDevelopers() {
+        return developers;
     }
 
-    void assignParticipant(String initials) {
-        if (app.developers.contains(app.getDeveloperBy(initials))) {
-            participants.add(initials);
-        }
+    Developer getDeveloper(String initials) {
+        for (Developer developer : developers)
+            if (developer.getInitials().equals(initials))
+                return developer;
+        return null;
     }
 
-    void reassignParticipant(String initials) {
-        participants.remove(initials);
+    Boolean assignDeveloper(String initials) {
+        if (initials != null && app.getDeveloper(initials) != null)
+            return developers.add(app.getDeveloper(initials));
+        return false;
+    }
+
+    Boolean unassignDeveloper(String initials) {
+        if (getDeveloper(initials) != null)
+            return developers.remove(getDeveloper(initials));
+        return false;
     }
 
     List<Activity> getActivities() {
         return activities;
     }
 
-    void addActivity(String activity) {
-        activities.add(new Activity(activity, name));
+    Activity getActivity(String name) {
+        for (Activity activity : activities)
+            if (activity.getName().equals(name))
+                return activity;
+        return null;
+    }
+
+    boolean addActivity(String activityName) {
+        if (getActivity(activityName) == null)
+            return activities.add(new Activity(activityName, this));
+        return false;
     }
 
     void removeActivity(String activity) {
-        activities.remove(getActivityBy(activity));
-    }
-
-    Activity getActivityBy(String name) {
-        for (Activity activity : activities) {
-            if (activity.getName().equals(name)) {
-                return activity;
-            }
-        }
-        return null;
+        activities.remove(getActivity(activity));
     }
 
     List<String> getNamesOfActivities() {
@@ -76,23 +93,17 @@ class Project {
         return namesOfActivities;
     }
 
-    Object[][] getDeveloperData() {
-        Object[][] data = new Object[participants.size()][1];
-        for (int i = 0; i < participants.size(); i++) {
-            data[i][0] = participants.get(i);
+    static Object[][] getData(List<Project> projects) {
+        Object[][] projectData = new Object[projects.size()][columnNames.length];
+        for (int i = 0; i < projects.size(); i++) {
+            projectData[i][0] = projects.get(i).getName();
+            projectData[i][1] = projects.get(i).getManagerInitials();
+            projectData[i][2] = projects.get(i).getDevelopers().size();
+            projectData[i][3] = projects.get(i).getActivities().size();
         }
-        return data;
+        return projectData;
     }
-    /*
-    Object[][] getActivityDataOf(List<Developer> developers) {
-        Object[][] developerData = new Object[developers.size()][app.developerColumnNames.length];
-        for (int i = 0; i < developers.size(); i++) {
-            developerData[i][0] = developers.get(i).getInitials();
-            developerData[i][1] = developers.get(i).getActivities().size();
-        }
-        return developerData;
-    }
-    */
+
     /*
     public void generateProjectNumber() {
     }

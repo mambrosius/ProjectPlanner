@@ -24,25 +24,25 @@ class ProjectTestSetup {
         assertEquals(2, ppApp.getNamesOfProjects().size());
 
         try {
-            bachelorProject = ppApp.getProjectBy("Bachelor Thesis");
+            bachelorProject = ppApp.getProject("Bachelor Thesis");
         } catch (NotFoundException e) {
             e.getMessage();
         }
 
         try {
-            plannerProject = ppApp.getProjectBy("Project Planner");
+            plannerProject = ppApp.getProject("Project Planner");
         } catch (NotFoundException e) {
             e.getMessage();
         }
 
         try {
-            dev1 = ppApp.getDeveloperBy("MAA");
+            dev1 = ppApp.getDeveloper("MAA");
         } catch (NotFoundException e) {
             e.getMessage();
         }
 
         try {
-            dev2 = ppApp.getDeveloperBy("BA");
+            dev2 = ppApp.getDeveloper("BA");
         } catch (NotFoundException e) {
             e.getMessage();
         }

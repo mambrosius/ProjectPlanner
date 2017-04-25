@@ -4,19 +4,23 @@ import static dtu.planner.app.ProjectPlanner.app;
 
 class Administrator {
 
-    void registerProject(String name) {
-        app.projects.add(new Project(name));
+    Boolean registerProject(String name) {
+        if (app.getProject(name) == null)
+            return app.getProjects().add(new Project(name));
+        return false;
     }
 
     void unregisterProject(String name) {
-        app.projects.remove(app.getProjectBy(name));
+        app.getProjects().remove(app.getProject(name));
     }
 
-    void registerDeveloper(String initials) {
-        app.developers.add(new Developer(initials));
+    Boolean registerDeveloper(String initials) {
+        if (app.getDeveloper(initials) == null)
+            return app.getDevelopers().add(new Developer(initials));
+        return false;
     }
 
     void unregisterDeveloper(String initials) {
-        app.developers.remove(app.getDeveloperBy(initials));
+        app.getDevelopers().remove(app.getDeveloper(initials));
     }
 }

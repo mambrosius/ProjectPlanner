@@ -2,15 +2,11 @@ package dtu.planner.app;
 
 import javax.swing.*;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
 import static dtu.planner.app.ProjectPlanner.app;
 
 public class LoginGUI {
 
-    private JPanel mainPanel;
+    private JPanel loginPanel;
     private JButton devButton;
     private JButton adminButton;
 
@@ -24,15 +20,15 @@ public class LoginGUI {
 
         devButton.addActionListener(e -> {
             String initials = JOptionPane.showInputDialog("Enter Initials").toLowerCase();
-            if (app.getInitialsOfDevelopers().contains(initials)) {
-                if (!app.getDeveloperBy(initials).isManager()) {
+
+            if (app.getDevelopers().contains(app.getDeveloper(initials))) {
+
+                if (app.getDeveloper(initials).getResponsibilities().size() == 0) {
                     new DeveloperGUI(initials);
                 } else {
                     String[] options = new String[] {"manager", "developer"};
-
-                    int option = JOptionPane.showOptionDialog(mainPanel, "login as", "Login",
+                    int option = JOptionPane.showOptionDialog(loginPanel, "login as", "Login",
                             JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
-
                     if (option == 0) {
                         new ManagerGUI(initials);
                     } else if (option == 1) {
@@ -40,14 +36,14 @@ public class LoginGUI {
                     }
                 }
             } else {
-                JOptionPane.showMessageDialog(mainPanel, "\""+ initials + "\" does not exist");
+                JOptionPane.showMessageDialog(loginPanel, "\""+ initials + "\" does not exist");
             }
         });
 
 
 
             /*
-            String initials = (String) JOptionPane.showInputDialog(mainPanel,
+            String initials = (String) JOptionPane.showInputDialog(loginPanel,
                     "select developer",
                     "Developer Login",
                     JOptionPane.INFORMATION_MESSAGE,
@@ -57,10 +53,10 @@ public class LoginGUI {
             */
             /*
             if (initials != null) {
-                if (!app.getDeveloperBy(initials).isManager()) {
+                if (!app.getDeveloper(initials).getIsManager()) {
                     new DeveloperGUI(initials);
                 } else {
-                    String selectedPosition = (String) JOptionPane.showInputDialog(mainPanel,
+                    String selectedPosition = (String) JOptionPane.showInputDialog(loginPanel,
                             "login as",
                             "Login as",
                             JOptionPane.INFORMATION_MESSAGE,
@@ -83,7 +79,7 @@ public class LoginGUI {
 
     private void setup() {
         JFrame titleSelectFrame = new JFrame("Project Planner");
-        titleSelectFrame.setContentPane(mainPanel);
+        titleSelectFrame.setContentPane(loginPanel);
         titleSelectFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         titleSelectFrame.pack();
         titleSelectFrame.setSize(250, 165);

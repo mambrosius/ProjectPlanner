@@ -1,64 +1,85 @@
 package dtu.planner.app;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import static dtu.planner.app.ProjectPlanner.app;
+
 class Activity {
-
-
     private String name;
-    private String projectName;
+    private Project project;
 
     private Double estimatedWorkHours;
-    private List<String> participants = new ArrayList<>();
+    private List<Developer> developers = new ArrayList<>();
+
+    static final String[] columnNames = new String[]{"name", "developers", "estimated work hours"};
 
     //private startWeek;
     //private endWeek;
     //private workHoursEstimated;
     //private workHoursRemaining;
 
-    Activity(String activityName, String projectName) {
-        this.projectName = projectName;
-        this.name = activityName;
-    }
-
-    public String getProjectName() {
-        return projectName;
-    }
-
-    List<String> getParticipants() {
-        return participants;
-    }
-
-    void addParticipant(String initials) {
-        participants.add(initials);
-    }
-
-    void removeParticipant(String initials) {
-        participants.remove(initials);
+    Activity(String name, Project project) {
+        this.name = name;
+        this.project = project;
     }
 
     public String getName() {
         return name;
     }
 
-    public Double getEstimatedWorkHours() {
-        return estimatedWorkHours;
+    Project getProject() {
+        return project;
+    }
+
+    List<Developer> getDevelopers() {
+        return developers;
+    }
+
+    Developer getDeveloper(String initials) {
+        for (Developer developer : developers)
+            if (developer.getInitials().equals(initials))
+                return developer;
+        return null;
+    }
+
+    void assignDeveloper(String initials) {
+        if (app.getDeveloper(initials) != null) {
+            developers.add(app.getDeveloper(initials));
+            getDeveloper(initials).assignActivity(this);
+        }
+    }
+
+    void unassignDeveloper(String initials) {
+        if (getDeveloper(initials) != null)
+            developers.remove(getDeveloper(initials));
     }
 
     public void setEstimatedWorkHours(Double estimatedWorkHours) {
         this.estimatedWorkHours = estimatedWorkHours;
     }
 
+    Double getEstimatedWorkHours() {
+        return estimatedWorkHours;
+    }
 
+    static Object[][] getData(List<Activity> activities) {
+        Object[][] activityData = new Object[activities.size()][columnNames.length];
+        for (int i = 0; i < activities.size(); i++) {
+            activityData[i][0] = activities.get(i).getName();
+            activityData[i][1] = activities.get(i).getDevelopers().size();
+            activityData[i][2] = activities.get(i).getEstimatedWorkHours();
+        }
+        return activityData;
+    }
 
     /*
     Integer getWeeksToDeadline() {
-
     }
 
     void editWorkHours(Double hours) {
-
     }
     */
 }

@@ -11,48 +11,48 @@ public class ProjectTest extends ProjectTestSetup {
     public void getInitialsOfParticipants() throws Exception {
         assertTrue(bachelorProject.getInitialsOfParticipants().isEmpty());
 
-        bachelorProject.assignParticipant(dev1);
+        bachelorProject.assignActivity(dev1);
         assertFalse(bachelorProject.getInitialsOfParticipants().isEmpty());
     }
 
     @Test
-    public void assignParticipant() throws Exception {
+    public void assignActivity() throws Exception {
         assertTrue(bachelorProject.getInitialsOfParticipants().isEmpty());
 
-        bachelorProject.assignParticipant(dev1);
+        bachelorProject.assignActivity(dev1);
         assertEquals(1, bachelorProject.getInitialsOfParticipants().size());
 
-        plannerProject.assignParticipant(dev1);
-        plannerProject.assignParticipant(dev2);
+        plannerProject.assignActivity(dev1);
+        plannerProject.assignActivity(dev2);
         assertEquals(2, plannerProject.getInitialsOfParticipants().size());
     }
 
     @Test
-    public void reassignParticipant() throws Exception {
-        assignParticipant();
+    public void unassignActivity() throws Exception {
+        assignActivity();
         assertEquals(1, bachelorProject.getInitialsOfParticipants().size());
         assertEquals(2, plannerProject.getInitialsOfParticipants().size());
 
-        plannerProject.reassignParticipant("MAA");
+        plannerProject.unassignActivity("MAA");
         assertEquals(1, plannerProject.getInitialsOfParticipants().size());
 
-        plannerProject.reassignParticipant("BA");
+        plannerProject.unassignActivity("BA");
         assertEquals(0, plannerProject.getInitialsOfParticipants().size());
     }
 
     @Test
-    public void getDeveloperBy() throws NotFoundException {
+    public void getDeveloper() throws NotFoundException {
         ppApp.registerDeveloper("MAA");
         ppApp.registerDeveloper("BA");
         try {
-            assertEquals("BA", ppApp.getDeveloperBy("BA").getInitials());
+            assertEquals("BA", ppApp.getDeveloper("BA").getInitials());
         } catch (NotFoundException e) {
             assertEquals("\"BA\" was not found.", e.getMessage());
             assertEquals("BA", e.getName());
         }
 
         try {
-            assertEquals("MAA", ppApp.getDeveloperBy("MA").getInitials());
+            assertEquals("MAA", ppApp.getDeveloper("MA").getInitials());
             fail("A NotFoundException should have been thrown.");
         } catch (NotFoundException e) {
             assertEquals("\"MA\" was not found.", e.getMessage());
@@ -63,7 +63,7 @@ public class ProjectTest extends ProjectTestSetup {
     @Test
     public void assignManager() throws Exception {
 
-        assignParticipant();
+        assignActivity();
         assertEquals(null, plannerProject.getManagerInitials());
 
         plannerProject.assignManager("MAA");

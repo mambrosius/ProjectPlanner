@@ -20,8 +20,8 @@ public class DeveloperTest extends DeveloperTestSetup {
         ppApp.registerProject("Bachelor Thesis");
         ppApp.registerDeveloper("MAA");
 
-        ppApp.getDeveloperBy("MAA").assignProject(ppApp.getProjectBy("Bachelor Thesis"));
-        assertEquals("MAA", ppApp.getProjectBy("Bachelor Thesis").getInitialsOfParticipants().get(0).getInitials());
+        ppApp.getDeveloper("MAA").assignProject(ppApp.getProject("Bachelor Thesis"));
+        assertEquals("MAA", ppApp.getProject("Bachelor Thesis").getInitialsOfParticipants().get(0).getInitials());
     }
     */
 }

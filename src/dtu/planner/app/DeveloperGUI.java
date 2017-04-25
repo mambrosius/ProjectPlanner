@@ -39,7 +39,7 @@ public class DeveloperGUI {
         frame.setVisible(true);
 
         activityTableModel =  new DefaultTableModel(
-                app.getDeveloperBy(initials).getActivityData(), activityColumnNames);
+                Activity.getData(app.getDeveloper(initials).getActivities()), activityColumnNames);
         activityTable.setModel(activityTableModel);
     }
 }

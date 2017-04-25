@@ -6,26 +6,24 @@ import static dtu.planner.app.ProjectPlanner.app;
 
 class Manager {
 
-    private String projectName;
+    private String initials;
 
-    Manager(String project) {
-        this.projectName = project;
+    Manager(String initials) {
+        this.initials = initials;
     }
 
-    String getProjectName() {
-        return projectName;
+    String getInitials() {
+        return initials;
     }
 
-    void assignDeveloper(String activityName, String initials) {
-        if (app.getProjectBy(projectName).getActivityBy(activityName) != null) {
-            app.getProjectBy(projectName).getActivityBy(activityName).addParticipant(initials);
-            app.getDeveloperBy(initials).addActivity(activityName);
+    void assignActivity(String initials, String activity, String project) {
+        if (app.getProject(project).getActivity(activity) != null) {
+            app.getProject(project).getActivity(activity).assignDeveloper(initials);
         }
     }
 
-    void reassignDeveloper(String activityName, String initials) {
-        app.getProjectBy(projectName).getActivityBy(activityName).removeParticipant(initials);
-        app.getDeveloperBy(initials).removeActivity(activityName);
+    void unassignActivity(String initials, String activity, String project) {
+        app.getProject(project).getActivity(activity).unassignDeveloper(initials);
     }
 
     void setStart(String activity, Calendar date) {
@@ -44,4 +42,10 @@ class Manager {
 
     }
 
+
+    /*
+    public Developer getDeveloper() {
+        return developer;
+    }
+    */
 }

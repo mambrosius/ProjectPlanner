@@ -24,8 +24,8 @@ public class AdministratorGUI {
     private JButton unregisterDeveloperButton;
     private JButton assignManagerButton;
     private JButton assignDeveloperButton;
-    private JButton reassignDeveloperButton;
-    private JButton reassignManagerButton;
+    private JButton unassignDeveloperButton;
+    private JButton unassignManagerButton;
     private JTabbedPane tabbedPane1;
     private JTabbedPane tabbedPane2;
 
@@ -35,42 +35,37 @@ public class AdministratorGUI {
 
         registerDeveloperButton.addActionListener(e -> {
             String initials = JOptionPane.showInputDialog("Type Developer Initials").toLowerCase();
-            if (app.getInitialsOfDevelopers().contains(initials)) {
-                JOptionPane.showMessageDialog(null,  "\"" + initials + "\" already exists");
-            } else if (!initials.isEmpty()) {
-                app.admin.registerDeveloper(initials);
-                developerTableModel.setDataVector(
-                        app.getDeveloperDataOf(app.getDevelopers()), app.developerColumnNames);
-            }
+            if (!initials.isEmpty())
+                if (app.getAdmin().registerDeveloper(initials))
+                    updateDeveloperTable();
+                else
+                    JOptionPane.showMessageDialog(adminPanel, "\"" + initials + "\" already exists");
         });
 
         unregisterDeveloperButton.addActionListener(e -> {
             String initials = (String) developerTable.getValueAt(developerTable.getSelectedRow(), 0);
             if (JOptionPane.showConfirmDialog(adminPanel, "Unregister: " + initials, "WARNING",
                     JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                app.admin.unregisterDeveloper(initials);
-                developerTableModel.setDataVector(
-                        app.getDeveloperDataOf(app.getDevelopers()), app.developerColumnNames);
+                app.getAdmin().unregisterDeveloper(initials);
+                updateDeveloperTable();
             }
         });
 
         registerProjectButton.addActionListener(e -> {
             String name = JOptionPane.showInputDialog("Write Project Name").toLowerCase();
-
-            if (app.getNamesOfProjects().contains(name)) {
-                JOptionPane.showMessageDialog(null, "\"" + name + "\" already exists");
-            } else if (!name.isEmpty()) {
-                app.admin.registerProject(name);
-                projectTableModel.setDataVector(app.getProjectDataOf(app.getProjects()), app.projectColumnNames);
-            }
+            if (!name.isEmpty())
+                if (app.getAdmin().registerProject(name))
+                    updateProjectTable();
+                else
+                    JOptionPane.showMessageDialog(adminPanel, "\"" + name + "\" already exists");
         });
 
         unregisterProjectButton.addActionListener(e -> {
             String name = (String) projectTable.getValueAt(projectTable.getSelectedRow(), 0);
             if (JOptionPane.showConfirmDialog(adminPanel, "Unregister: " + name, "WARNING",
                     JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                app.admin.unregisterProject(name);
-                projectTableModel.setDataVector(app.getProjectDataOf(app.getProjects()), app.projectColumnNames);
+                app.getAdmin().unregisterProject(name);
+                updateProjectTable();
             }
         });
 
@@ -81,53 +76,51 @@ public class AdministratorGUI {
                     "Select Developer", //
                     JOptionPane.INFORMATION_MESSAGE,
                     null,
-                    app.getInitialsOfDevelopers().toArray(),
+                    app.getInitialsOfDevelopers(app.getDevelopers()).toArray(),
                     null);
             if (initials != null) {
-                app.getProjectBy(name).assignParticipant(initials);
-                projectTableModel.setDataVector(app.getProjectDataOf(app.getProjects()), app.projectColumnNames);
+                app.getProject(name).assignDeveloper(initials);
+                updateProjectTable();
             }
         });
 
-        reassignDeveloperButton.addActionListener(e -> {
+        unassignDeveloperButton.addActionListener(e -> {
             String name = (String) projectTable.getValueAt(projectTable.getSelectedRow(),0);
             String initials = (String) JOptionPane.showInputDialog(adminPanel,
-                    "Reassign Developer",
-                    "Reassign developer",
+                    "Unassign Developer",
+                    "Unassign developer",
                     JOptionPane.INFORMATION_MESSAGE,
                     null,
-                    app.getProjectBy(name).getParticipants().toArray(),
+                    app.getInitialsOfDevelopers(app.getProject(name).getDevelopers()).toArray(),
                     null);
-            app.getProjectBy(name).reassignParticipant(initials);
-            projectTableModel.setDataVector(app.getProjectDataOf(app.getProjects()), app.projectColumnNames);
+            if (app.getProject(name).unassignDeveloper(initials))
+                updateProjectTable();
         });
 
         assignManagerButton.addActionListener(e -> {
-            String projectName = (String) projectTable.getValueAt(projectTable.getSelectedRow(),0);
-            Project project = app.getProjectBy(projectName);
-            if (project.getManager() == null) {
+            String name = (String) projectTable.getValueAt(projectTable.getSelectedRow(),0);
+            if (app.getProject(name).getManager() == null) {
                 String initials = (String) JOptionPane.showInputDialog(adminPanel,
                         "Select Manager",
                         "Select manager", //
                         JOptionPane.INFORMATION_MESSAGE,
                         null,
-                        project.getParticipants().toArray(),
+                        app.getInitialsOfDevelopers(app.getProject(name).getDevelopers()).toArray(),
                         null);
                 if (initials != null) {
-                    app.getDeveloperBy(initials).appointManager(projectName);
-                    projectTableModel.setDataVector(app.getProjectDataOf(app.getProjects()), app.projectColumnNames);
-
+                    app.getDeveloper(initials).appointManager(app.getProject(name));
+                    updateProjectTable();
                 }
             }
         });
 
-        reassignManagerButton.addActionListener(e -> {
+        unassignManagerButton.addActionListener(e -> {
             String name = (String) projectTable.getValueAt(projectTable.getSelectedRow(),0);
-            String initials = app.getProjectBy(name).getManager();
-            if (JOptionPane.showConfirmDialog(adminPanel, "Reassign manager: " + initials, "WARNING",
+            String initials = app.getProject(name).getManagerInitials();
+            if (JOptionPane.showConfirmDialog(adminPanel, "Unassign manager: " + initials, "WARNING",
                     JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                app.getDeveloperBy(initials).reassignManagerTitle();
-                projectTableModel.setDataVector(app.getProjectDataOf(app.getProjects()), app.projectColumnNames);
+                app.getDeveloper(initials).stopManage(app.getProject(name));
+                updateProjectTable();
             }
         });
     }
@@ -142,13 +135,19 @@ public class AdministratorGUI {
         adminFrame.setLocationRelativeTo(null);
         adminFrame.setVisible(true);
 
-        projectTableModel = new DefaultTableModel(
-                app.getProjectDataOf(app.getProjects()), app.projectColumnNames);
+        projectTableModel = new DefaultTableModel(Project.getData(app.getProjects()), Project.columnNames);
         projectTable.setModel(projectTableModel);
 
-        developerTableModel = new DefaultTableModel(
-                app.getDeveloperDataOf(app.getDevelopers()), app.developerColumnNames);
+        developerTableModel = new DefaultTableModel(Developer.getData(app.getDevelopers()), Developer.columnNames);
         developerTable.setModel(developerTableModel);
+    }
+
+    private void updateProjectTable() {
+        projectTableModel.setDataVector(Project.getData(app.getProjects()), Project.columnNames);
+    }
+
+    private void updateDeveloperTable() {
+        developerTableModel.setDataVector(Developer.getData(app.getDevelopers()), Developer.columnNames);
     }
 }
 

@@ -42,18 +42,18 @@ public class ProjectPlannerTest extends ProjectPlannerTestSetup {
     }
 
     @Test
-    public void getDeveloperBy() throws Exception {
+    public void getDeveloper() throws Exception {
         ppApp.registerDeveloper("MAA");
         ppApp.registerDeveloper("BA");
         try {
-            assertEquals("BA", ppApp.getDeveloperBy("BA").getInitials());
+            assertEquals("BA", ppApp.getDeveloper("BA").getInitials());
         } catch (NotFoundException e) {
             assertEquals("\"BA\" was not found.", e.getMessage());
             assertEquals("BA", e.getName());
         }
 
         try {
-            assertEquals("MAA", ppApp.getDeveloperBy("MA").getInitials());
+            assertEquals("MAA", ppApp.getDeveloper("MA").getInitials());
             fail("A NotFoundException should have been thrown.");
         } catch (NotFoundException e) {
             assertEquals("\"MA\" was not found.", e.getMessage());
@@ -93,18 +93,18 @@ public class ProjectPlannerTest extends ProjectPlannerTestSetup {
     }
 
     @Test
-    public void getProjectBy() throws Exception {
+    public void getProject() throws Exception {
         ppApp.registerProject("Project Planner");
         ppApp.registerProject("Bachelor Thesis");
         try {
-            assertEquals("Bachelor Thesis", ppApp.getProjectBy("Bachelor Thesis").getName());
+            assertEquals("Bachelor Thesis", ppApp.getProject("Bachelor Thesis").getName());
         } catch(NotFoundException e) {
             assertEquals("\"Bachelor Thesis\" was not found.", e.getMessage());
             assertEquals("Bachelor Thesis", e.getName());
         }
 
         try {
-            assertEquals("Project Planner", ppApp.getProjectBy("Project lanner").getName());
+            assertEquals("Project Planner", ppApp.getProject("Project lanner").getName());
             fail("A NotFoundException should have been thrown.");
         } catch (NotFoundException e) {
             assertEquals("\"Project lanner\" was not found.", e.getMessage());
