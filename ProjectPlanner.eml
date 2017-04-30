@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component inherit-compiler-output="true" jdk="IntelliJ IDEA Community Edition IC-171.4073.35" jdk_type="IDEA JDK">
+	<output-test url="file://$MODULE_DIR$/out/test/ProjectPlanner"/>
+	<exclude-output/>
+	<contentEntry url="file://$MODULE_DIR$">
+		<testFolder url="file://$MODULE_DIR$/test"/>
+	</contentEntry>
+	<lib name="JUnit4" scope="TEST"/>
+</component>

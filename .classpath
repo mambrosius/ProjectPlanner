@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/IntelliJ IDEA Community Edition IC-171.4073.35"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="src" path="exceptions"/>
+	<classpathentry kind="var" path="APPLICATION_HOME_DIR/lib/junit-4.12.jar"/>
+	<classpathentry kind="output" path="out/production/ProjectPlanner"/>
+</classpath>

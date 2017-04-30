@@ -56,15 +56,57 @@ public class ProjectTest extends ProjectTestSetup {
 
         //Tjekker om "bran" er unassignet af projektet ved at se om der er 3 personer assignet til projektet
         assertEquals(3,test.size());
-        assertEquals(test.get(0).getInitials(),"moaa");
-        assertEquals(test.get(1).getInitials(),"bamo");
-        assertEquals(test.get(2).getInitials(),"moba");
+        assertEquals("moaa",test.get(0).getInitials());
+        assertEquals("bamo",test.get(1).getInitials());
+        assertEquals("mabo",test.get(2).getInitials());
     }
 
-    /*
+    //Tilføje aktiviteter til projekt
     @Test
-    public void
-    */
+    public void addActivity(){
+        pro.addActivity("design");
+        pro.addActivity("ledelse");
+        pro.addActivity("tests");
+        List<Activity> act = pro.getActivities();
+
+        //Tjekker efter om de alle 3 aktiviteter er tilføjet til projektet
+        assertEquals(3,act.size());
+    }
+
+    //Sletter nu 2 aktiviteter ud af 7
+    @Test
+    public void deleteAct(){
+        pro.addActivity("krav");
+        pro.addActivity("analyse");
+        pro.addActivity("tests");
+        pro.addActivity("design");
+        pro.addActivity("ledelse");
+        pro.addActivity("grafik");
+        pro.addActivity("extratest");
+
+        //Tjekker efter om alle aktiviteter er på projektet
+        List<Activity> act = pro.getActivities();
+        assertEquals(7,act.size());
+
+        //Sletter nu to aktiviteter
+        pro.removeActivity("grafik");
+        pro.removeActivity("ledelse");
+
+        //Herefter tjekker vi om de er blevet slettet
+        assertEquals("krav",act.get(0).getName());
+        assertEquals("analyse",act.get(1).getName());
+        assertEquals("tests",act.get(2).getName());
+        assertEquals("design",act.get(3).getName());
+        assertEquals("extratest",act.get(4).getName());
+    }
+
+    //Generere projektrapport
+    @Test
+    public void getRapport(){
+
+
+    }
+
 
 
 
