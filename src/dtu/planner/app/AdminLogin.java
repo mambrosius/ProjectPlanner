@@ -12,7 +12,7 @@ public class AdminLogin {
 
     private JButton cancelButton;
     private JButton loginButton;
-    private JPasswordField passwordField;
+    public JPasswordField passwordField;
 
     AdminLogin () {
 

@@ -16,7 +16,7 @@ public class ProjectPlanner {
         new LoginGUI();
     }
 
-    private ProjectPlanner() {
+    public ProjectPlanner() {
         this.date = new Date();
         this.getAdmin = new Administrator();
         this.projects = new ArrayList<>();
