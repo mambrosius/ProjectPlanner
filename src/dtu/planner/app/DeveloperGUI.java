@@ -3,6 +3,9 @@ package dtu.planner.app;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import static dtu.planner.app.ProjectPlanner.app;
 
 public class DeveloperGUI {
@@ -11,11 +14,12 @@ public class DeveloperGUI {
 
     private JPanel devPanel;
 
-    private JButton button1;
+    private JButton logActivityButton;
 
-    private static Object[] activityColumnNames = new Object[]{"activity"};
-    private DefaultTableModel activityTableModel;
+    private DefaultTableModel activityTableModel = new DefaultTableModel();
     private JTable activityTable;
+    private JLabel dateLabel;
+    private JLabel initialsLabel;
 
     DeveloperGUI(String initials) {
 
@@ -23,14 +27,17 @@ public class DeveloperGUI {
 
         setup();
 
-        button1.addActionListener(e -> {
-
+        logActivityButton.addActionListener(e -> {
+            String name = (String) activityTable.getValueAt(activityTable.getSelectedRow(), 0);
+            Double hours = Double.parseDouble(JOptionPane.showInputDialog(devPanel, "log work hours"));
+            app.getDeveloper(this.initials).logActivity(name, hours);
+            updateActivityTable();
         });
     }
 
     private void setup() {
 
-        JFrame frame = new JFrame("Project Planner - " + initials);
+        JFrame frame = new JFrame("Project Planner - Developer");
         frame.setContentPane(devPanel);
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.pack();
@@ -38,8 +45,15 @@ public class DeveloperGUI {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
-        activityTableModel =  new DefaultTableModel(
-                Activity.getData(app.getDeveloper(initials).getActivities()), activityColumnNames);
+        dateLabel.setText(app.date.toString());
+        initialsLabel.setText(this.initials);
+
         activityTable.setModel(activityTableModel);
+        updateActivityTable();
+    }
+
+    private void updateActivityTable() {
+        activityTableModel.setDataVector(
+                Activity.getData(app.getDeveloper(initials).getActivities()), Activity.columnNames);
     }
 }

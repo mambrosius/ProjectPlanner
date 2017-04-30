@@ -77,7 +77,7 @@ class Project {
 
     boolean addActivity(String activityName) {
         if (getActivity(activityName) == null)
-            return activities.add(new Activity(activityName, this));
+            return activities.add(new Activity(activityName, name));
         return false;
     }
 

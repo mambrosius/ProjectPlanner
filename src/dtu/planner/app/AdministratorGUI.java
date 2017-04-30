@@ -28,6 +28,7 @@ public class AdministratorGUI {
     private JButton unassignManagerButton;
     private JTabbedPane tabbedPane1;
     private JTabbedPane tabbedPane2;
+    private JLabel dateLabel;
 
     AdministratorGUI() {
 
@@ -134,6 +135,8 @@ public class AdministratorGUI {
         adminFrame.setSize(1000, 500);
         adminFrame.setLocationRelativeTo(null);
         adminFrame.setVisible(true);
+
+        dateLabel.setText(app.date.toString());
 
         projectTableModel = new DefaultTableModel(Project.getData(app.getProjects()), Project.columnNames);
         projectTable.setModel(projectTableModel);

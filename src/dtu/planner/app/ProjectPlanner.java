@@ -5,9 +5,9 @@ import java.util.List;
 
 public class ProjectPlanner {
 
+    Date date;
     static ProjectPlanner app = new ProjectPlanner();
 
-    private DateServer dateServer;
     private Administrator getAdmin;
     private List<Project> projects;
     private List<Developer> developers;
@@ -17,6 +17,7 @@ public class ProjectPlanner {
     }
 
     private ProjectPlanner() {
+        this.date = new Date();
         this.getAdmin = new Administrator();
         this.projects = new ArrayList<>();
         this.developers = new ArrayList<>();

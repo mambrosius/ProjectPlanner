@@ -3,21 +3,19 @@ package dtu.planner.app;
 import java.util.ArrayList;
 import java.util.List;
 
-import static dtu.planner.app.ProjectPlanner.app;
-
 class Developer {
 
     private String initials;
 
     private List<Project> responsibilities = new ArrayList<>();
     private List<Activity> activities = new ArrayList<>();
+    //private List<Absence> absences;
 
     static final String[] columnNames = new String[]{"initials", "activities"};
 
     //private Double checkIn;
     //private Double checkOut;
     //private Double unregisteredHours;
-    //private List<Absence> absences;
 
     Developer(String initials) {
         this.initials = initials;
@@ -68,18 +66,15 @@ class Developer {
     }
 
     List<String> getNamesOfResp() {
-        /*
-        String[] namesOfProjects = new String[responsibilities.size()];
-        for (int i = 0; i < responsibilities.size(); i++)
-            namesOfProjects[i] = responsibilities.get(i).getName();
-        return namesOfProjects;
-        */
-
         List<String> namesOfProjects = new ArrayList<>();
         for (Project project : responsibilities) {
             namesOfProjects.add(project.getName());
         }
         return namesOfProjects;
+    }
+
+    void logActivity(String activity, Double hours) {
+        getActivity(activity).setHoursUsed(hours);
     }
 
     static Object[][] getData(List<Developer> developers) {
@@ -100,9 +95,6 @@ class Developer {
 
     }
 
-    void logActivity(Activity activity, Double hours) {
-
-    }
 
     void seekAssistance(Activity activity, Developer initial ) {
 

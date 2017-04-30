@@ -3,6 +3,9 @@ package dtu.planner.app;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import static dtu.planner.app.ProjectPlanner.app;
 
 public class ManagerGUI {
@@ -20,14 +23,30 @@ public class ManagerGUI {
     private JButton assignDeveloperButton;
     private JButton unassignDeveloperButton;
 
-    private static DefaultTableModel developerTableModel;
+    private static DefaultTableModel developerTableModel = new DefaultTableModel();
     private JTable developerTable;
 
-    private static DefaultTableModel activityTableModel;
+    private static DefaultTableModel activityTableModel = new DefaultTableModel();
     private JTable activityTable;
 
-    //private static DefaultComboBoxModel respComboBoxModel;
     private JComboBox<String> respBox;
+    private JButton setEstimatedWorkHoursButton;
+    private JLabel dateLabel;
+    private JLabel initialLabel;
+    private JPanel managerMainPanel;
+    private JPanel devPanel;
+    private JTabbedPane managerMenu;
+    private JTable projectTable;
+    private JTabbedPane tabbedPane1;
+    private JButton assignManagerButton;
+    private JButton unassignManagerButton;
+    private JTabbedPane tabbedPane2;
+    private JButton registerDeveloperButton;
+    private JButton registerProjectButton;
+    private JButton unregisterDeveloperButton;
+    private JButton unregisterProjectButton;
+    private JPanel adminPanel;
+    private JButton asDeveloperButton;
 
     ManagerGUI(String manager) {
 
@@ -43,13 +62,6 @@ public class ManagerGUI {
                 else
                     JOptionPane.showMessageDialog(managerPanel, "\"" + name + "\" already exists");
         });
-            /*
-            if (app.getProject(projectName).getNamesOfActivities().contains(activityName)) {
-
-            } else if (!activityName.isEmpty()) {
-                app.getProject(projectName).assignActivity(activityName);
-                activityTableModel.addRow(new Object[] {activityName});
-            }*/
 
         removeActivityButton.addActionListener(e -> {
             String name = (String) activityTable.getValueAt(activityTable.getSelectedRow(),0);
@@ -57,7 +69,6 @@ public class ManagerGUI {
                     JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                 getProject().removeActivity(name);
                 updateActivityTable();
-                //activityTableModel.removeRow(activityTable.getSelectedRow());
             }
         });
 
@@ -74,12 +85,6 @@ public class ManagerGUI {
             if (initials != null) {
                 getProject().getManager().assignActivity(initials, name, getProject().getName());
                 updateActivityTable();
-                /*
-                app.getDeveloper(managerInitials).asManager.assignActivity(activityName, participantInitials);
-                activityTable.setValueAt(
-                        app.getProject(projectName).getActivity(activityName).getDevelopers().size(),
-                        activityTable.getSelectedRow(), 1);
-                        */
             }
         });
 
@@ -105,12 +110,24 @@ public class ManagerGUI {
             updateActivityTable();
             updateDeveloperTable();
         });
+
+        setEstimatedWorkHoursButton.addActionListener(e -> {
+            String name = (String) activityTable.getValueAt(activityTable.getSelectedRow(), 0);
+            Double hours = Double.parseDouble(JOptionPane.showInputDialog(managerPanel, "Set work hours as x.x"));
+            System.out.print(hours);
+            getProject().getActivity(name).setEstimatedWorkHours(hours);
+            updateActivityTable();
+        });
+
+        asDeveloperButton.addActionListener(e -> {
+
+        });
     }
 
     private void setup() {
 
-        JFrame devFrame = new JFrame("Project Planner");
-        devFrame.setContentPane(managerPanel);
+        JFrame devFrame = new JFrame("Project Planner - Manager");
+        devFrame.setContentPane(managerMainPanel);
         devFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         devFrame.pack();
         devFrame.setSize(1000, 500);
@@ -121,13 +138,17 @@ public class ManagerGUI {
             respBox.addItem(resp);
         respBox.setPopupVisible(false);
 
-        developerTableModel = new DefaultTableModel(
-                Developer.getData(getProject().getDevelopers()), Developer.columnNames);
-        developerTable.setModel(developerTableModel);
+        dateLabel.setText(app.date.toString());
+        initialLabel.setText(this.manager);
 
-        activityTableModel = new DefaultTableModel(
-                Activity.getData(getProject().getActivities()) , Activity.columnNames);
+        developerTable.setModel(developerTableModel);
         activityTable.setModel(activityTableModel);
+        updateDeveloperTable();
+        updateActivityTable();
+
+        managerMenu.remove(devPanel);
+
+        //devPanel.setVisible(false);
     }
 
     private Project getProject() {

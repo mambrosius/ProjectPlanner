@@ -9,28 +9,34 @@ import static dtu.planner.app.ProjectPlanner.app;
 
 class Activity {
     private String name;
-    private Project project;
+    private String project;
 
     private Double estimatedWorkHours;
+    private Double hoursUsed;
+    private Double remainingHours;
+
     private List<Developer> developers = new ArrayList<>();
 
-    static final String[] columnNames = new String[]{"name", "developers", "estimated work hours"};
+    static final String[] columnNames = new String[]{"name", "developers", "total work hours", "remaining work hours"};
 
     //private startWeek;
     //private endWeek;
     //private workHoursEstimated;
     //private workHoursRemaining;
 
-    Activity(String name, Project project) {
+    Activity(String name, String project) {
         this.name = name;
         this.project = project;
+        this.estimatedWorkHours = 0.0;
+        this.hoursUsed = 0.0;
+        this.remainingHours = 0.0;
     }
 
     public String getName() {
         return name;
     }
 
-    Project getProject() {
+    String getProjectName() {
         return project;
     }
 
@@ -54,15 +60,22 @@ class Activity {
 
     void unassignDeveloper(String initials) {
         if (getDeveloper(initials) != null)
+            app.getDeveloper(initials).unassignActivity(this);
             developers.remove(getDeveloper(initials));
     }
 
     public void setEstimatedWorkHours(Double estimatedWorkHours) {
         this.estimatedWorkHours = estimatedWorkHours;
+        remainingHours = estimatedWorkHours - hoursUsed;
     }
 
     Double getEstimatedWorkHours() {
         return estimatedWorkHours;
+    }
+
+    void setHoursUsed(Double hours) {
+        this.hoursUsed += hours;
+        remainingHours = estimatedWorkHours - hoursUsed;
     }
 
     static Object[][] getData(List<Activity> activities) {
@@ -71,9 +84,20 @@ class Activity {
             activityData[i][0] = activities.get(i).getName();
             activityData[i][1] = activities.get(i).getDevelopers().size();
             activityData[i][2] = activities.get(i).getEstimatedWorkHours();
+            activityData[i][3] = activities.get(i).getRemainingHours();
         }
         return activityData;
     }
+    /*
+    void updateRemainingHours() {
+        remainingHours = estimatedWorkHours - hoursUsed;
+    }*/
+
+    public Double getRemainingHours() {
+        return remainingHours;
+    }
+
+
 
     /*
     Integer getWeeksToDeadline() {
