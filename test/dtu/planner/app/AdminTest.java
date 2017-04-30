@@ -1,7 +1,7 @@
 package dtu.planner.app;
 import static dtu.planner.app.ProjectPlanner.app;
 
-import com.intellij.util.xmlb.annotations.Text;
+//import com.intellij.util.xmlb.annotations.Text;
 import org.junit.*;
 
 import java.util.List;

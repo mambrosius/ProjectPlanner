@@ -13,7 +13,7 @@ public class ProjectPlanner {
     private List<Developer> developers;
 
     public static void main(String[] args) {
-        new LoginGUI();
+        new MainGUI();
     }
 
     public ProjectPlanner() {
