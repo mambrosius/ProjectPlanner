@@ -8,6 +8,8 @@ import static dtu.planner.app.ProjectPlanner.*;
 public class AdministratorGUI {
 
     private JPanel adminPanel;
+    JFrame adminFrame;
+
 
     // project
     private DefaultTableModel projectTableModel;
@@ -30,9 +32,10 @@ public class AdministratorGUI {
     private JTabbedPane tabbedPane2;
     private JLabel dateLabel;
 
-    AdministratorGUI() {
+    AdministratorGUI(Boolean visible) {
 
         setup();
+        adminFrame.setVisible(visible);
 
         registerDeveloperButton.addActionListener(e -> {
             String initials = JOptionPane.showInputDialog("Type Developer Initials").toLowerCase();
@@ -124,17 +127,18 @@ public class AdministratorGUI {
                 updateProjectTable();
             }
         });
+
+
+
     }
 
     private void setup() {
-
-        JFrame adminFrame = new JFrame("Project Planner - Administrator");
+        adminFrame = new JFrame("Project Planner - Administrator");
         adminFrame.setContentPane(adminPanel);
         adminFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         adminFrame.pack();
         adminFrame.setSize(1000, 500);
         adminFrame.setLocationRelativeTo(null);
-        adminFrame.setVisible(true);
 
         dateLabel.setText(app.date.toString());
 
@@ -145,12 +149,21 @@ public class AdministratorGUI {
         developerTable.setModel(developerTableModel);
     }
 
-    private void updateProjectTable() {
+    void updateProjectTable() {
         projectTableModel.setDataVector(Project.getData(app.getProjects()), Project.columnNames);
     }
 
-    private void updateDeveloperTable() {
+    void updateDeveloperTable() {
         developerTableModel.setDataVector(Developer.getData(app.getDevelopers()), Developer.columnNames);
     }
+
+    JFrame getAdminFrame() {
+        return adminFrame;
+    }
+
+    void dispose() {
+        adminFrame.dispose();
+    }
 }
+
 

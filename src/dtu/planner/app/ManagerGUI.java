@@ -1,10 +1,12 @@
 package dtu.planner.app;
 
 import javax.swing.*;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.*;
+import java.awt.event.*;
 
 import static dtu.planner.app.ProjectPlanner.app;
 
@@ -15,6 +17,11 @@ public class ManagerGUI {
     //private Project project;
     //private String projectName;
     //private Project project = new Project(null);
+
+    private JFrame manFrame;
+
+    private DeveloperGUI devGui;
+    private AdministratorGUI adminGui;
 
     private JPanel managerPanel;
 
@@ -36,16 +43,6 @@ public class ManagerGUI {
     private JPanel managerMainPanel;
     private JPanel devPanel;
     private JTabbedPane managerMenu;
-    private JTable projectTable;
-    private JTabbedPane tabbedPane1;
-    private JButton assignManagerButton;
-    private JButton unassignManagerButton;
-    private JTabbedPane tabbedPane2;
-    private JButton registerDeveloperButton;
-    private JButton registerProjectButton;
-    private JButton unregisterDeveloperButton;
-    private JButton unregisterProjectButton;
-    private JPanel adminPanel;
     private JButton asDeveloperButton;
 
     ManagerGUI(String manager) {
@@ -85,6 +82,7 @@ public class ManagerGUI {
             if (initials != null) {
                 getProject().getManager().assignActivity(initials, name, getProject().getName());
                 updateActivityTable();
+                devGui.updateActivityTable();
             }
         });
 
@@ -113,30 +111,42 @@ public class ManagerGUI {
 
         setEstimatedWorkHoursButton.addActionListener(e -> {
             String name = (String) activityTable.getValueAt(activityTable.getSelectedRow(), 0);
-            Double hours = Double.parseDouble(JOptionPane.showInputDialog(managerPanel, "Set work hours as x.x"));
-            System.out.print(hours);
+            Double hours = Double.parseDouble(JOptionPane.showInputDialog(managerPanel, "type work hours as x.x"));
             getProject().getActivity(name).setEstimatedWorkHours(hours);
             updateActivityTable();
         });
 
-        asDeveloperButton.addActionListener(e -> {
+        manFrame.addWindowListener(new WindowAdapter(){
+            public void windowClosing(WindowEvent we){
+                devGui.dispose();
+                adminGui.dispose();
+            }
+        });
 
+        activityTableModel.addTableModelListener(e -> {
+            updateDeveloperTable();
+            devGui.updateActivityTable();
+            adminGui.updateProjectTable();
+            adminGui.updateDeveloperTable();
         });
     }
 
     private void setup() {
 
-        JFrame devFrame = new JFrame("Project Planner - Manager");
-        devFrame.setContentPane(managerMainPanel);
-        devFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        devFrame.pack();
-        devFrame.setSize(1000, 500);
-        devFrame.setLocationRelativeTo(null);
-        devFrame.setVisible(true);
+        manFrame = new JFrame("Project Planner - Manager");
+        manFrame.setContentPane(managerMainPanel);
+        manFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        manFrame.pack();
+        manFrame.setSize(1100, 600);
+        manFrame.setLocationRelativeTo(null);
+        manFrame.setVisible(true);
 
         for (String resp : app.getDeveloper(manager).getNamesOfResp())
             respBox.addItem(resp);
         respBox.setPopupVisible(false);
+
+        setupDeveloperTap(manager);
+        setupAdminTap();
 
         dateLabel.setText(app.date.toString());
         initialLabel.setText(this.manager);
@@ -145,10 +155,6 @@ public class ManagerGUI {
         activityTable.setModel(activityTableModel);
         updateDeveloperTable();
         updateActivityTable();
-
-        managerMenu.remove(devPanel);
-
-        //devPanel.setVisible(false);
     }
 
     private Project getProject() {
@@ -161,5 +167,15 @@ public class ManagerGUI {
 
     private void updateActivityTable() {
         activityTableModel.setDataVector(Activity.getData(getProject().getActivities()), Activity.columnNames);
+    }
+
+    private void setupAdminTap() {
+        adminGui = new AdministratorGUI(false);
+        managerMenu.addTab("administrator", adminGui.getAdminFrame().getContentPane());
+    }
+
+    private void setupDeveloperTap(String initials) {
+        devGui = new DeveloperGUI(initials, false);
+        managerMenu.addTab("developer", devGui.getDevFrame().getContentPane());
     }
 }

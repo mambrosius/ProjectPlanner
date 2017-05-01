@@ -1,5 +1,7 @@
 package dtu.planner.app;
 
+import com.sun.deploy.panel.JreTableModel;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
@@ -12,6 +14,7 @@ public class DeveloperGUI {
 
     private String initials;
 
+    private JFrame devFrame;
     private JPanel devPanel;
 
     private JButton logActivityButton;
@@ -21,11 +24,14 @@ public class DeveloperGUI {
     private JLabel dateLabel;
     private JLabel initialsLabel;
 
-    DeveloperGUI(String initials) {
+    DeveloperGUI(String initials, Boolean visible) {
 
         this.initials = initials;
 
         setup();
+
+        devFrame.setVisible(visible);
+
 
         logActivityButton.addActionListener(e -> {
             String name = (String) activityTable.getValueAt(activityTable.getSelectedRow(), 0);
@@ -37,13 +43,12 @@ public class DeveloperGUI {
 
     private void setup() {
 
-        JFrame frame = new JFrame("Project Planner - Developer");
-        frame.setContentPane(devPanel);
-        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        frame.pack();
-        frame.setSize(1000, 500);
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        devFrame = new JFrame("Project Planner - Developer");
+        devFrame.setContentPane(devPanel);
+        devFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        devFrame.pack();
+        devFrame.setSize(1000, 500);
+        devFrame.setLocationRelativeTo(null);
 
         dateLabel.setText(app.date.toString());
         initialsLabel.setText(this.initials);
@@ -52,8 +57,20 @@ public class DeveloperGUI {
         updateActivityTable();
     }
 
-    private void updateActivityTable() {
+    void updateActivityTable() {
         activityTableModel.setDataVector(
                 Activity.getData(app.getDeveloper(initials).getActivities()), Activity.columnNames);
+    }
+
+    JFrame getDevFrame() {
+        return devFrame;
+    }
+
+    void dispose() {
+        devFrame.dispose();
+    }
+
+    DefaultTableModel getActivityTableModel() {
+        return activityTableModel;
     }
 }
