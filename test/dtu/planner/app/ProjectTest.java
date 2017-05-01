@@ -27,8 +27,8 @@ public class ProjectTest extends ProjectTestSetup {
         List<Developer> test = pro.getDevelopers();
 
 
-        assertEquals(test.get(0).getInitials(),"bran");
-        assertEquals(test.get(1).getInitials(),"moaa");
+        assertEquals("bran",test.get(0).getInitials());
+        assertEquals("moaa",test.get(1).getInitials());
    }
 
     // Tester hvor en udvikler ud af 4 bliver unassignet af et projekt
@@ -99,6 +99,42 @@ public class ProjectTest extends ProjectTestSetup {
         assertEquals("design",act.get(3).getName());
         assertEquals("extratest",act.get(4).getName());
     }
+
+    //Deklare en manager
+    @Test
+    public void setManager(){
+        //Udvikler bliver oprettet og sættes som manager til et projekt
+        admin.registerDeveloper("bran");
+        pro.setManager("bran");
+
+        String manager = pro.getManagerInitials();
+
+        assertEquals("bran",manager);
+    }
+
+    //Skifter manageren til et projekt
+    @Test
+    public void removeManager(){
+        //Udvikler bliver oprettet og sættes som manager til et projekt
+        admin.registerDeveloper("bran");
+        admin.registerDeveloper("moaa");
+
+        pro.setManager("bran");
+
+        String manager1 = pro.getManagerInitials();
+
+        //Tjekker om manageren er deklareret til projektet
+        assertEquals("bran",manager1);
+
+        //Fjerner nu manageren, og tilføjer en ny manager
+        pro.setManager("moaa");
+
+        String manager2 = pro.getManagerInitials();
+
+        //Tjekker om den nye manager er deklareret til projektet
+        assertEquals("moaa",manager2);
+    }
+
 
     /*
     //Generere projektrapport
