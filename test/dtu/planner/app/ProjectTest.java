@@ -17,7 +17,7 @@ public class ProjectTest extends ProjectTestSetup {
 
     // Tester om 2 udviklere er assignet til et projekt
    @Test
-    public void AssignDev(){
+    public void assignDev(){
        //De 2 udvikler registreres, hvorefter de assignes et projekt
         admin.registerDeveloper("bran");
         admin.registerDeveloper("moaa");
@@ -33,7 +33,7 @@ public class ProjectTest extends ProjectTestSetup {
 
     // Tester hvor en udvikler ud af 4 bliver unassignet af et projekt
     @Test
-    public void UnassignDev(){
+    public void unassignDev(){
         //De 4 udvikler registreres, hvorefter de assignes et projekt
         admin.registerDeveloper("bran");
         pro.assignDeveloper("bran");
@@ -58,7 +58,7 @@ public class ProjectTest extends ProjectTestSetup {
         assertEquals(3,test.size());
         assertEquals("moaa",test.get(0).getInitials());
         assertEquals("bamo",test.get(1).getInitials());
-        assertEquals("mabo",test.get(2).getInitials());
+        assertEquals("moba",test.get(2).getInitials());
     }
 
     //Tilføje aktiviteter til projekt
@@ -100,14 +100,24 @@ public class ProjectTest extends ProjectTestSetup {
         assertEquals("extratest",act.get(4).getName());
     }
 
+    /*
     //Generere projektrapport
     @Test
     public void getRapport(){
+        admin.registerDeveloper("bran");
+        pro.assignDeveloper("bran");
 
+        admin.registerDeveloper("moaa");
+        pro.assignDeveloper("moaa");
+
+        pro.addActivity("krav");
+        pro.addActivity("analyse");
+
+        List<Activity> act = pro.getData();
 
     }
 
-
+*/
 
 
 
