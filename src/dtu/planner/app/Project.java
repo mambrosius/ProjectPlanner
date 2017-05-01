@@ -1,6 +1,7 @@
 package dtu.planner.app;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import static dtu.planner.app.ProjectPlanner.app;
@@ -9,17 +10,19 @@ class Project {
 
     //private deadline;
     //private startDate;
-    //private String projectNumber;
 
+    private String projectNo;
     private String name;
+
     private Manager manager;
 
     private List<Activity> activities = new ArrayList<>();
     private List<Developer> developers = new ArrayList<>();
 
-    static final String[] columnNames = new String[] {"name", "manager", "participants", "activities"};
+    static final String[] columnNames = new String[] {"project number", "name", "manager", "participants", "activities"};
 
-    Project(String name) {
+    Project(String projectNo, String name) {
+        this.projectNo = projectNo;
         this.name = name;
     }
 
@@ -96,16 +99,16 @@ class Project {
     static Object[][] getData(List<Project> projects) {
         Object[][] projectData = new Object[projects.size()][columnNames.length];
         for (int i = 0; i < projects.size(); i++) {
-            projectData[i][0] = projects.get(i).getName();
-            projectData[i][1] = projects.get(i).getManagerInitials();
-            projectData[i][2] = projects.get(i).getDevelopers().size();
-            projectData[i][3] = projects.get(i).getActivities().size();
+            projectData[i][0] = projects.get(i).getProjectNo();
+            projectData[i][1] = projects.get(i).getName();
+            projectData[i][2] = projects.get(i).getManagerInitials();
+            projectData[i][3] = projects.get(i).getDevelopers().size();
+            projectData[i][4] = projects.get(i).getActivities().size();
         }
         return projectData;
     }
 
-    /*
-    public void generateProjectNumber() {
+    public String getProjectNo() {
+        return projectNo;
     }
-    */
 }

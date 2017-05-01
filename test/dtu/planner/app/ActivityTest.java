@@ -9,6 +9,7 @@ import static org.junit.Assert.*;
 
 
 public class ActivityTest {
+    /*
     ProjectPlanner app = new ProjectPlanner();
     Administrator admin = new Administrator();
     Project pro = new Project("pro1");

@@ -1,11 +1,8 @@
 package dtu.planner.app;
 
 import javax.swing.*;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
-import java.awt.*;
 import java.awt.event.*;
 
 import static dtu.planner.app.ProjectPlanner.app;
@@ -36,13 +33,18 @@ public class ManagerGUI {
     private static DefaultTableModel activityTableModel = new DefaultTableModel();
     private JTable activityTable;
 
+    private DefaultComboBoxModel<String> respBoxModel;
     private JComboBox<String> respBox;
+
     private JButton setEstimatedWorkHoursButton;
     private JLabel dateLabel;
     private JLabel initialLabel;
     private JPanel managerMainPanel;
     private JPanel devPanel;
     private JTabbedPane managerMenu;
+    private JTabbedPane tabbedPane1;
+    private JTabbedPane tabbedPane2;
+    private JButton resetButton;
     private JButton asDeveloperButton;
 
     ManagerGUI(String manager) {
@@ -112,7 +114,7 @@ public class ManagerGUI {
         setEstimatedWorkHoursButton.addActionListener(e -> {
             String name = (String) activityTable.getValueAt(activityTable.getSelectedRow(), 0);
             Double hours = Double.parseDouble(JOptionPane.showInputDialog(managerPanel, "type work hours as x.x"));
-            getProject().getActivity(name).setEstimatedWorkHours(hours);
+            getProject().getActivity(name).setEstimatedHours(hours);
             updateActivityTable();
         });
 
@@ -123,11 +125,21 @@ public class ManagerGUI {
             }
         });
 
-        activityTableModel.addTableModelListener(e -> {
-            updateDeveloperTable();
-            devGui.updateActivityTable();
-            adminGui.updateProjectTable();
-            adminGui.updateDeveloperTable();
+        managerMenu.addChangeListener(e -> {
+            String manSel = managerMenu.getTitleAt(managerMenu.getSelectedIndex());
+            switch (manSel) {
+                case "manager":
+                    updateActivityTable();
+                    updateDeveloperTable();
+                    break;
+                case "developer":
+                    devGui.updateActivityTable();
+                    break;
+                default:
+                    adminGui.updateProjectTable();
+                    adminGui.updateDeveloperTable();
+                    break;
+            }
         });
     }
 
@@ -141,9 +153,11 @@ public class ManagerGUI {
         manFrame.setLocationRelativeTo(null);
         manFrame.setVisible(true);
 
+
+        respBoxModel = new DefaultComboBoxModel<>();
+        respBox.setModel(respBoxModel);
         for (String resp : app.getDeveloper(manager).getNamesOfResp())
-            respBox.addItem(resp);
-        respBox.setPopupVisible(false);
+            respBoxModel.addElement(resp);
 
         setupDeveloperTap(manager);
         setupAdminTap();

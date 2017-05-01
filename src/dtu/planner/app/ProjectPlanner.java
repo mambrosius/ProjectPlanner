@@ -1,12 +1,15 @@
 package dtu.planner.app;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ProjectPlanner {
 
-    Date date;
     static ProjectPlanner app = new ProjectPlanner();
+
+    Date date;
 
     private Administrator getAdmin;
     private List<Project> projects;
@@ -17,7 +20,10 @@ public class ProjectPlanner {
     }
 
     public ProjectPlanner() {
+
         this.date = new Date();
+
+
         this.getAdmin = new Administrator();
         this.projects = new ArrayList<>();
         this.developers = new ArrayList<>();

@@ -54,6 +54,6 @@ public class MainGUI {
         mainFrame.setVisible(true);
 
         //adminPanel.getRootPane().setDefaultButton(adminLoginButton);
-        dateLabel.setText(app.date.toString());
+        //dateLabel.setText(app.date.toString());
     }
 }

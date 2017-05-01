@@ -23,6 +23,8 @@ public class DeveloperGUI {
     private JTable activityTable;
     private JLabel dateLabel;
     private JLabel initialsLabel;
+    private JButton seekAssistanceButton;
+    private JButton absenceButton;
 
     DeveloperGUI(String initials, Boolean visible) {
 

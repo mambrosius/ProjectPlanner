@@ -10,7 +10,6 @@ public class AdministratorGUI {
     private JPanel adminPanel;
     JFrame adminFrame;
 
-
     // project
     private DefaultTableModel projectTableModel;
     private JTable projectTable;
@@ -65,7 +64,7 @@ public class AdministratorGUI {
         });
 
         unregisterProjectButton.addActionListener(e -> {
-            String name = (String) projectTable.getValueAt(projectTable.getSelectedRow(), 0);
+            String name = (String) projectTable.getValueAt(projectTable.getSelectedRow(), 1);
             if (JOptionPane.showConfirmDialog(adminPanel, "Unregister: " + name, "WARNING",
                     JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                 app.getAdmin().unregisterProject(name);
@@ -74,7 +73,7 @@ public class AdministratorGUI {
         });
 
         assignDeveloperButton.addActionListener(e -> {
-            String name = (String) projectTable.getValueAt(projectTable.getSelectedRow(),0);
+            String name = (String) projectTable.getValueAt(projectTable.getSelectedRow(),1);
             String initials = (String) JOptionPane.showInputDialog(adminPanel,
                     "Select Developer",
                     "Select Developer", //
@@ -89,7 +88,7 @@ public class AdministratorGUI {
         });
 
         unassignDeveloperButton.addActionListener(e -> {
-            String name = (String) projectTable.getValueAt(projectTable.getSelectedRow(),0);
+            String name = (String) projectTable.getValueAt(projectTable.getSelectedRow(),1);
             String initials = (String) JOptionPane.showInputDialog(adminPanel,
                     "Unassign Developer",
                     "Unassign developer",
@@ -102,7 +101,7 @@ public class AdministratorGUI {
         });
 
         assignManagerButton.addActionListener(e -> {
-            String name = (String) projectTable.getValueAt(projectTable.getSelectedRow(),0);
+            String name = (String) projectTable.getValueAt(projectTable.getSelectedRow(),1);
             if (app.getProject(name).getManager() == null) {
                 String initials = (String) JOptionPane.showInputDialog(adminPanel,
                         "Select Manager",
@@ -119,7 +118,7 @@ public class AdministratorGUI {
         });
 
         unassignManagerButton.addActionListener(e -> {
-            String name = (String) projectTable.getValueAt(projectTable.getSelectedRow(),0);
+            String name = (String) projectTable.getValueAt(projectTable.getSelectedRow(),1);
             String initials = app.getProject(name).getManagerInitials();
             if (JOptionPane.showConfirmDialog(adminPanel, "Unassign manager: " + initials, "WARNING",
                     JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
@@ -127,9 +126,6 @@ public class AdministratorGUI {
                 updateProjectTable();
             }
         });
-
-
-
     }
 
     private void setup() {

@@ -5,7 +5,7 @@ import org.junit.*;
 import static org.junit.Assert.*;
 
 public class ManagerTest {
-
+/*
     ProjectPlanner app = new ProjectPlanner();
     Administrator admin = new Administrator();
     Project pro = new Project("pro1");

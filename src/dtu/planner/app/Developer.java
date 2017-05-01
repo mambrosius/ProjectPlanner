@@ -11,7 +11,7 @@ class Developer {
     private List<Activity> activities = new ArrayList<>();
     //private List<Absence> absences;
 
-    static final String[] columnNames = new String[]{"initials", "activities"};
+    static final String[] columnNames = new String[]{"initials", "activities", "manager", "status"};
 
     //private Double checkIn;
     //private Double checkOut;
@@ -82,8 +82,15 @@ class Developer {
         for (int i = 0; i < developers.size(); i++) {
             developerData[i][0] = developers.get(i).getInitials();
             developerData[i][1] = developers.get(i).getActivities().size();
+            developerData[i][2] = developers.get(i).isManager();
         }
         return developerData;
+    }
+
+    private String isManager() {
+        if (responsibilities.isEmpty())
+            return "no";
+        return "yes";
     }
 
     /*
