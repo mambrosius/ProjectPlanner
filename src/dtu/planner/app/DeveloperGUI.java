@@ -23,8 +23,16 @@ public class DeveloperGUI {
     private JTable activityTable;
     private JLabel dateLabel;
     private JLabel initialsLabel;
-    private JButton seekAssistanceButton;
-    private JButton absenceButton;
+    private JButton sendButton;
+    private JButton registerButton;
+    private JTabbedPane tabbedPane1;
+    private JComboBox comboBox1;
+    private JComboBox comboBox2;
+    private JTabbedPane tabbedPane2;
+    private JComboBox comboBox3;
+    private JComboBox comboBox4;
+    private JButton acceptButton1;
+    private JButton denyButton1;
 
     DeveloperGUI(String initials, Boolean visible) {
 
