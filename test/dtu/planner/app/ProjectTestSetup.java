@@ -1,11 +1,11 @@
 package dtu.planner.app;
 
-import dtu.planner.app.exceptions.NotFoundException;
-import org.junit.Before;
+import dtu.planner.models.Developer;
+import dtu.planner.models.Project;
 
 import static org.junit.Assert.assertEquals;
 
-class ProjectTestSetup {
+class ProjectTestSetup {/*
     Administrator ppApp = new Administrator();
     Project bachelorProject = null;
     Project plannerProject = null;

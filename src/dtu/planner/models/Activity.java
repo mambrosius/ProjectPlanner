@@ -1,11 +1,11 @@
-package dtu.planner.app;
+package dtu.planner.models;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import static dtu.planner.app.ProjectPlanner.app;
-
-class Activity {
+public class Activity {
     private String name;
     private String project;
 
@@ -13,19 +13,18 @@ class Activity {
     private Double hoursUsed;
     private Double remainingHours;
 
-    private List<Developer> developers = new ArrayList<>();
+    private Map<String, Developer> developerMap = new HashMap<>();
 
-    static final String[] columnNames = new String[]{"name", "developers", "estimated hours", "remaining hours"};
+    private static final String[] columnNames = new String[]{"name", "developers", "estimated hours", "remaining hours"};
 
     //private startWeek;
     //private endWeek;
     //private workHoursEstimated;
     //private workHoursRemaining;
 
-    Activity(String name, String project) {
+    public Activity(String name, String project) {
         this.name = name;
         this.project = project;
-        this.estimatedHours = 0.0;
         this.hoursUsed = 0.0;
         this.remainingHours = 0.0;
     }
@@ -38,28 +37,16 @@ class Activity {
         return project;
     }
 
-    List<Developer> getDevelopers() {
-        return developers;
+    public Map<String, Developer> getDeveloperMap() {
+        return developerMap;
     }
 
-    Developer getDeveloper(String initials) {
-        for (Developer developer : developers)
-            if (developer.getInitials().equals(initials))
-                return developer;
-        return null;
+    Developer addDeveloper(Developer dev) {
+        return developerMap.putIfAbsent(dev.getInitials(), dev);
     }
 
-    void assignDeveloper(String initials) {
-        if (app.getDeveloper(initials) != null) {
-            developers.add(app.getDeveloper(initials));
-            getDeveloper(initials).assignActivity(this);
-        }
-    }
-
-    void unassignDeveloper(String initials) {
-        if (getDeveloper(initials) != null)
-            app.getDeveloper(initials).unassignActivity(this);
-            developers.remove(getDeveloper(initials));
+    public void removeDeveloper(String initials) {
+        developerMap.remove(initials);
     }
 
     public void setEstimatedHours(Double estimatedHours) {
@@ -76,26 +63,27 @@ class Activity {
         remainingHours = estimatedHours - hoursUsed;
     }
 
-    static Object[][] getData(List<Activity> activities) {
+    public static Object[][] getData(Map<String, Activity> activityMap) {
+        List<Activity> activities = new ArrayList<>(activityMap.values());
         Object[][] activityData = new Object[activities.size()][columnNames.length];
         for (int i = 0; i < activities.size(); i++) {
             activityData[i][0] = activities.get(i).getName();
-            activityData[i][1] = activities.get(i).getDevelopers().size();
+            activityData[i][1] = activities.get(i).getDeveloperMap().size();
             activityData[i][2] = activities.get(i).getEstimatedHours();
             activityData[i][3] = activities.get(i).getRemainingHours();
         }
         return activityData;
     }
-    /*
-    void updateRemainingHours() {
-        remainingHours = estimatedHours - hoursUsed;
-    }*/
 
-    public Double getRemainingHours() {
+    private Double getRemainingHours() {
+        if (estimatedHours == null)
+            return null;
         return remainingHours;
     }
 
-
+    public static String[] getColumnNames() {
+        return columnNames;
+    }
 
     /*
     Integer getWeeksToDeadline() {

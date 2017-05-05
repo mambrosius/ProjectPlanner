@@ -1,4 +1,4 @@
-package dtu.planner.app.exceptions;
+package dtu.planner.exceptions;
 
 public class NotFoundException extends Exception {
     private String name;

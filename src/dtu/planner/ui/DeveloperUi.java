@@ -1,24 +1,20 @@
-package dtu.planner.app;
+package dtu.planner.ui;
 
-import com.sun.deploy.panel.JreTableModel;
+import dtu.planner.models.Date;
+import dtu.planner.models.Developer;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+public class DeveloperUi extends JFrame {
 
-import static dtu.planner.app.ProjectPlanner.app;
+    private Date date = new Date();
 
-public class DeveloperGUI {
+    private Developer dev;
 
-    private String initials;
-
-    private JFrame devFrame;
     private JPanel devPanel;
 
     private JButton logActivityButton;
-
     private DefaultTableModel activityTableModel = new DefaultTableModel();
     private JTable activityTable;
     private JLabel dateLabel;
@@ -34,14 +30,12 @@ public class DeveloperGUI {
     private JButton acceptButton1;
     private JButton denyButton1;
 
-    DeveloperGUI(String initials, Boolean visible) {
+    public DeveloperUi(Developer developer) {
 
-        this.initials = initials;
-
+        this.dev = developer;
         setup();
 
-        devFrame.setVisible(visible);
-
+        /*
 
         logActivityButton.addActionListener(e -> {
             String name = (String) activityTable.getValueAt(activityTable.getSelectedRow(), 0);
@@ -51,36 +45,29 @@ public class DeveloperGUI {
         });
     }
 
-    private void setup() {
-
-        devFrame = new JFrame("Project Planner - Developer");
-        devFrame.setContentPane(devPanel);
-        devFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        devFrame.pack();
-        devFrame.setSize(1000, 500);
-        devFrame.setLocationRelativeTo(null);
-
-        dateLabel.setText(app.date.toString());
-        initialsLabel.setText(this.initials);
-
-        activityTable.setModel(activityTableModel);
-        updateActivityTable();
-    }
-
     void updateActivityTable() {
         activityTableModel.setDataVector(
                 Activity.getData(app.getDeveloper(initials).getActivities()), Activity.columnNames);
     }
 
-    JFrame getDevFrame() {
-        return devFrame;
-    }
-
-    void dispose() {
-        devFrame.dispose();
-    }
-
     DefaultTableModel getActivityTableModel() {
         return activityTableModel;
+    }
+    */
+    }
+
+    private void setup() {
+
+        setContentPane(devPanel);
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        pack();
+        setSize(1000, 500);
+        setLocationRelativeTo(null);
+
+        dateLabel.setText(date.toString());
+        initialsLabel.setText(dev.getInitials());
+
+        activityTable.setModel(activityTableModel);
+        //updateActivityTable();
     }
 }

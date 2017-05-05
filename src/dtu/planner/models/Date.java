@@ -1,11 +1,11 @@
-package dtu.planner.app;
+package dtu.planner.models;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-class Date {
+public class Date {
 
-    Calendar get() {
+    public Calendar get() {
         return new GregorianCalendar();
     }
 

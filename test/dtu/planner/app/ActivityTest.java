@@ -1,12 +1,5 @@
 package dtu.planner.app;
 
-import org.junit.*;
-
-import java.util.GregorianCalendar;
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 
 public class ActivityTest {
     /*
@@ -31,13 +24,13 @@ public class ActivityTest {
         admin.registerDeveloper("bamo");
 
         //Tilføje udviklerne til projekterne
-        pro.assignDeveloper("bran");
-        pro.assignDeveloper("moaa");
-        pro.assignDeveloper("bamo");
+        pro.addDeveloper("bran");
+        pro.addDeveloper("moaa");
+        pro.addDeveloper("bamo");
 
         //Tilføjer nu "bran" og "bamo" til act1
-        act1.assignDeveloper("bran");
-        act1.assignDeveloper("bamo");
+        act1.addDeveloper("bran");
+        act1.addDeveloper("bamo");
         List<Developer> test1 = act1.getDevelopers();
 
         //Ser om de er blevet tilføjet
@@ -46,9 +39,9 @@ public class ActivityTest {
 
 
         //Tilføjer desuden alle 3 udviklere til act2
-        act2.assignDeveloper("bran");
-        act2.assignDeveloper("moaa");
-        act2.assignDeveloper("bamo");
+        act2.addDeveloper("bran");
+        act2.addDeveloper("moaa");
+        act2.addDeveloper("bamo");
         List<Developer> test2 = act2.getDevelopers();
 
         //Ser om alle 3 udviklere er blevet tilføjet
@@ -57,11 +50,11 @@ public class ActivityTest {
         assertEquals("bamo",test2.get(2).getInitials());
 
         //Tilføjer 2 udviklere til en aktivitet i pro2
-        pro2.assignDeveloper("bran");
-        pro2.assignDeveloper("bamo");
+        pro2.addDeveloper("bran");
+        pro2.addDeveloper("bamo");
 
-        act3.assignDeveloper("bran");
-        act3.assignDeveloper("bamo");
+        act3.addDeveloper("bran");
+        act3.addDeveloper("bamo");
 
         List<Developer> test3 = act3.getDevelopers();
 
@@ -78,18 +71,18 @@ public class ActivityTest {
         admin.registerDeveloper("bamo");
 
         //Tilføje udviklerne til projekterne
-        pro.assignDeveloper("bran");
-        pro.assignDeveloper("moaa");
-        pro.assignDeveloper("bamo");
-        pro2.assignDeveloper("bran");
-        pro2.assignDeveloper("moaa");
+        pro.addDeveloper("bran");
+        pro.addDeveloper("moaa");
+        pro.addDeveloper("bamo");
+        pro2.addDeveloper("bran");
+        pro2.addDeveloper("moaa");
 
         //Tilføje udviklerne til aktiviteterne
-        act1.assignDeveloper("bran");
-        act1.assignDeveloper("moaa");
-        act2.assignDeveloper("bamo");
-        act3.assignDeveloper("bran");
-        act3.assignDeveloper("moaa");
+        act1.addDeveloper("bran");
+        act1.addDeveloper("moaa");
+        act2.addDeveloper("bamo");
+        act3.addDeveloper("bran");
+        act3.addDeveloper("moaa");
 
         List<Developer> test1 = act1.getDevelopers();
         List<Developer> test2 = act2.getDevelopers();
@@ -101,8 +94,8 @@ public class ActivityTest {
         assertEquals(2,test3.size());
 
         //Fjerner en udvikler i aktiviteterne
-        act1.unassignDeveloper("bran");
-        act3.unassignDeveloper("moaa");
+        act1.removeDeveloper("bran");
+        act3.removeDeveloper("moaa");
 
         //Ser om "bran" er fjernet fra en aktivitet og "moaa" fra en anden
         assertEquals(1,test1.size());
@@ -180,18 +173,18 @@ public class ActivityTest {
         admin.registerDeveloper("bamo");
 
         //Tilføje udviklerne til projekterne
-        pro.assignDeveloper("bran");
-        pro.assignDeveloper("moaa");
-        pro.assignDeveloper("bamo");
-        pro2.assignDeveloper("bran");
-        pro2.assignDeveloper("moaa");
+        pro.addDeveloper("bran");
+        pro.addDeveloper("moaa");
+        pro.addDeveloper("bamo");
+        pro2.addDeveloper("bran");
+        pro2.addDeveloper("moaa");
 
         //Tilføje udviklerne til aktiviteterne
-        act1.assignDeveloper("bran");
-        act1.assignDeveloper("moaa");
-        act2.assignDeveloper("bamo");
-        act3.assignDeveloper("bran");
-        act3.assignDeveloper("moaa");
+        act1.addDeveloper("bran");
+        act1.addDeveloper("moaa");
+        act2.addDeveloper("bamo");
+        act3.addDeveloper("bran");
+        act3.addDeveloper("moaa");
 
 
         //Giver en estimeret tid til aktiviterne

@@ -1,5 +1,5 @@
 package dtu.planner.app;
 
 class ProjectPlannerTestSetup {
-    Administrator ppApp = new Administrator();
+    //Administrator ppApp = new Administrator();
 }

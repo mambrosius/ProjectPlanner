@@ -1,9 +1,5 @@
 package dtu.planner.app;
 
-import dtu.planner.app.exceptions.NotFoundException;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 public class ProjectPlannerTest extends ProjectPlannerTestSetup {
 /*
     @Test

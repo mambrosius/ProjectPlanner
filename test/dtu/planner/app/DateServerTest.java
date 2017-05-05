@@ -1,11 +1,5 @@
 package dtu.planner.app;
 
-import org.junit.Test;
-
-import java.util.Calendar;
-
-import static org.junit.Assert.*;
-
 public class DateServerTest {
     /*
     @Test

@@ -1,9 +1,5 @@
 package dtu.planner.app;
 
-import org.junit.*;
-
-import static org.junit.Assert.*;
-
 public class ManagerTest {
 /*
     ProjectPlanner app = new ProjectPlanner();

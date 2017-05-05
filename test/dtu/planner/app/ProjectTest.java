@@ -1,13 +1,5 @@
 package dtu.planner.app;
 
-import dtu.planner.app.exceptions.NotFoundException;
-import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 public class ProjectTest extends ProjectTestSetup {
 /*
     ProjectPlanner app = new ProjectPlanner();
@@ -22,8 +14,8 @@ public class ProjectTest extends ProjectTestSetup {
         admin.registerDeveloper("bran");
         admin.registerDeveloper("moaa");
 
-        pro.assignDeveloper("bran");
-        pro.assignDeveloper("moaa");
+        pro.addDeveloper("bran");
+        pro.addDeveloper("moaa");
         List<Developer> test = pro.getDevelopers();
 
 
@@ -36,16 +28,16 @@ public class ProjectTest extends ProjectTestSetup {
     public void unassignDev(){
         //De 4 udvikler registreres, hvorefter de assignes et projekt
         admin.registerDeveloper("bran");
-        pro.assignDeveloper("bran");
+        pro.addDeveloper("bran");
 
         admin.registerDeveloper("moaa");
-        pro.assignDeveloper("moaa");
+        pro.addDeveloper("moaa");
 
         admin.registerDeveloper("bamo");
-        pro.assignDeveloper("bamo");
+        pro.addDeveloper("bamo");
 
         admin.registerDeveloper("moba");
-        pro.assignDeveloper("moba");
+        pro.addDeveloper("moba");
         List<Developer> test = pro.getDevelopers();
 
         //Tjekker om de alle er assignet projektet
@@ -141,10 +133,10 @@ public class ProjectTest extends ProjectTestSetup {
     @Test
     public void getRapport(){
         admin.registerDeveloper("bran");
-        pro.assignDeveloper("bran");
+        pro.addDeveloper("bran");
 
         admin.registerDeveloper("moaa");
-        pro.assignDeveloper("moaa");
+        pro.addDeveloper("moaa");
 
         pro.addActivity("krav");
         pro.addActivity("analyse");
