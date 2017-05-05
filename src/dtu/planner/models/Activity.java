@@ -41,11 +41,13 @@ public class Activity {
         return developerMap;
     }
 
-    Developer addDeveloper(Developer dev) {
-        return developerMap.putIfAbsent(dev.getInitials(), dev);
+    void addDeveloper(Developer dev) {
+        if (developerMap.putIfAbsent(dev.getInitials(), dev) == null)
+            dev.addActivity(this);
     }
 
     public void removeDeveloper(String initials) {
+        developerMap.get(initials).removeActivity(this.getName());
         developerMap.remove(initials);
     }
 

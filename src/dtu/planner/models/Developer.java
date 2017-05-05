@@ -1,5 +1,7 @@
 package dtu.planner.models;
 
+import jdk.nashorn.internal.objects.NativeFunction;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,18 +32,16 @@ public class Developer {
         return columnNames;
     }
 
-    /*
-
-    void assignActivity(Activity activity) {
-        activities.add(activity);
+    void addActivity(Activity activity) {
+        activityMap.put(activity.getName(), activity);
     }
 
-    void unassignActivity(Activity activity) {
-        activities.remove(activity);
+    void removeActivity(String activity) {
+        activityMap.remove(activity);
     }
 
-    void logActivity(String activity, Double hours) {
-        getActivity(activity).setHoursUsed(hours);
+    public void logActivity(String activity, Double hours) {
+        activityMap.get(activity).setHoursUsed(hours);
     }
 
     /*
@@ -78,5 +78,13 @@ public class Developer {
 
     public Map<String, Activity> getActivityMap() {
         return activityMap;
+    }
+
+    public boolean hasActivity() {
+        return !activityMap.isEmpty();
+    }
+
+    public Object[][] getActivityData() {
+        return Activity.getData(activityMap);
     }
 }

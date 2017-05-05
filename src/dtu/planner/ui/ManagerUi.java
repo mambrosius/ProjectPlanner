@@ -34,8 +34,8 @@ public class ManagerUi extends JFrame {
     private static DefaultTableModel activityTableModel;
     private JTable activityTable;
 
-    private DefaultComboBoxModel<String> respBoxModel;
-    private JComboBox<String> respBox;
+    private DefaultComboBoxModel<Object> respBoxModel;
+    private JComboBox<Object> respBox;
 
     public ManagerUi(Manager manager, ProjectPlanner projectPlanner) {
 
@@ -111,9 +111,11 @@ public class ManagerUi extends JFrame {
             }
         });
 
-        /*
-        managerMenu.addChangeListener(e -> {
 
+        managerMenu.addChangeListener(e -> {
+            man.refreshTab(managerMenu.getSelectedIndex(), this);
+
+            /*
             man.refreshTap(managerMenu.getTitleAt(managerMenu.getSelectedIndex()));
             managerMenu.getSelectedComponent()
                     managerMenu.ta
@@ -129,16 +131,12 @@ public class ManagerUi extends JFrame {
                     //devGui.updateActivityTable();
                     break;
                 default:
-
-
                     adminGui.updateProjectTable();
                     adminGui.updateDeveloperTable();
                     break;
             }
-
+            */
         });
-
-        */
 
         respBox.addActionListener(e -> {
             updateActivityTable(man.getActivityData(getSelectedResp()));
@@ -150,21 +148,22 @@ public class ManagerUi extends JFrame {
                 man.dispose();
             }
         });
+
+
     }
 
     private void setup() {
-
         setContentPane(managerMainPanel);
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         pack();
         setSize(1100, 600);
         setLocationRelativeTo(null);
 
-        respBoxModel = new DefaultComboBoxModel<>( );
+        respBoxModel = new DefaultComboBoxModel<>(man.getRespMap().keySet().toArray());
         respBox.setModel(respBoxModel);
 
-        for (String resp : man.getRespMap().keySet())
-            respBoxModel.addElement(resp);
+        /*for (String resp : man.getRespMap().keySet())
+            respBoxModel.addElement(resp);*/
 
         managerMenu.addTab("developer", man.setupDeveloperTap());
         managerMenu.addTab("administrator", man.setupAdminTap());
@@ -215,5 +214,13 @@ public class ManagerUi extends JFrame {
 
     private String getSelectedActivity() {
         return (String) activityTable.getValueAt(activityTable.getSelectedRow(),0);
+    }
+
+    public void update() {
+        updateDeveloperTable(man.getDeveloperData(getSelectedResp()));
+        updateActivityTable(man.getActivityData(getSelectedResp()));
+
+        respBoxModel = new DefaultComboBoxModel<>(man.getRespMap().keySet().toArray());
+        respBox.setModel(respBoxModel);
     }
 }

@@ -204,4 +204,9 @@ public class AdministratorUi extends JFrame {
         return (String) JOptionPane.showInputDialog(null, message, "Select",
                 JOptionPane.INFORMATION_MESSAGE, null, keys, "");
     }
+
+    public void update() {
+        updateDeveloperTable(admin.getDeveloperData());
+        updateProjectTable(admin.getProjectData());
+    }
 }

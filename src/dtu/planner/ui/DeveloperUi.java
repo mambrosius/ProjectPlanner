@@ -1,5 +1,7 @@
 package dtu.planner.ui;
 
+import dtu.planner.models.Absence;
+import dtu.planner.models.Activity;
 import dtu.planner.models.Date;
 import dtu.planner.models.Developer;
 
@@ -15,7 +17,7 @@ public class DeveloperUi extends JFrame {
     private JPanel devPanel;
 
     private JButton logActivityButton;
-    private DefaultTableModel activityTableModel = new DefaultTableModel();
+    private DefaultTableModel activityTableModel;
     private JTable activityTable;
     private JLabel dateLabel;
     private JLabel initialsLabel;
@@ -26,7 +28,7 @@ public class DeveloperUi extends JFrame {
     private JComboBox comboBox2;
     private JTabbedPane tabbedPane2;
     private JComboBox comboBox3;
-    private JComboBox comboBox4;
+    private JComboBox<Absence> absenceBox;
     private JButton acceptButton1;
     private JButton denyButton1;
 
@@ -35,25 +37,13 @@ public class DeveloperUi extends JFrame {
         this.dev = developer;
         setup();
 
-        /*
-
         logActivityButton.addActionListener(e -> {
             String name = (String) activityTable.getValueAt(activityTable.getSelectedRow(), 0);
             Double hours = Double.parseDouble(JOptionPane.showInputDialog(devPanel, "log work hours"));
-            app.getDeveloper(this.initials).logActivity(name, hours);
-            updateActivityTable();
+            dev.logActivity(name, hours);
+            updateActivityTable(dev.getActivityData());
         });
-    }
 
-    void updateActivityTable() {
-        activityTableModel.setDataVector(
-                Activity.getData(app.getDeveloper(initials).getActivities()), Activity.columnNames);
-    }
-
-    DefaultTableModel getActivityTableModel() {
-        return activityTableModel;
-    }
-    */
     }
 
     private void setup() {
@@ -67,7 +57,21 @@ public class DeveloperUi extends JFrame {
         dateLabel.setText(date.toString());
         initialsLabel.setText(dev.getInitials());
 
+        activityTableModel = new DefaultTableModel(Activity.getColumnNames(), 0);
         activityTable.setModel(activityTableModel);
-        //updateActivityTable();
+
+        DefaultComboBoxModel<Absence> absenceModel = new DefaultComboBoxModel<>(Absence.values());
+        absenceBox.setModel(absenceModel);
+
+        if (dev.hasActivity())
+            updateActivityTable(dev.getActivityData());
+    }
+
+    private void updateActivityTable(Object[][] activityData) {
+        activityTableModel.setDataVector(activityData, Activity.getColumnNames());
+    }
+
+    public void update() {
+        updateActivityTable(dev.getActivityData());
     }
 }

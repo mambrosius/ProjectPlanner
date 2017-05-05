@@ -4,9 +4,12 @@ import dtu.planner.exceptions.CustomException;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class Administrator {
+
+    private Date date = new Date();
 
     private ProjectPlanner model;
 
@@ -18,7 +21,7 @@ public class Administrator {
         if (name != null)
             if (name.equals(""))
                 throw new CustomException("Missing input");
-            else if (model.getProjectMap().putIfAbsent(name, new Project("1", name)) != null)
+            else if (model.getProjectMap().putIfAbsent(name, new Project(generateProjectNumber(), name)) != null)
                 throw new CustomException(name + " already exists");
     }
 
@@ -83,20 +86,18 @@ public class Administrator {
         return  availableDevelopers.toArray();
     }
 
-    /*
     private String generateProjectNumber() {
 
-        String year = Integer.toString(app.date.get().get(Calendar.YEAR));
-        String numberAsString = String.valueOf(++projectCount);
+        String year = Integer.toString(date.get().get(Calendar.YEAR));
+        String numberAsString = String.valueOf(model.incrementProjectCount());
         StringBuilder sb = new StringBuilder();
 
         while (sb.length() + numberAsString.length() < 6)
             sb.append('0');
-        sb.append(projectCount);
+        sb.append(model.getProjectCount());
 
-        return year + "-" + sb;
+        return year + "." + sb;
     }
-    }*/
 
     public boolean haveProjects() {
         return !model.getProjectMap().isEmpty();

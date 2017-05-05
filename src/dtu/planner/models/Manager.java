@@ -3,6 +3,7 @@ package dtu.planner.models;
 import dtu.planner.exceptions.CustomException;
 import dtu.planner.ui.AdministratorUi;
 import dtu.planner.ui.DeveloperUi;
+import dtu.planner.ui.ManagerUi;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,14 +12,13 @@ import java.util.List;
 
 public class Manager {
 
-    DeveloperUi devUi;
-    AdministratorUi adminUi;
+    private DeveloperUi devUi;
+    private AdministratorUi adminUi;
 
     private ProjectPlanner model;
     private String initials;
 
     private Map<String, Project> respMap = new HashMap<>();
-
 
     public Manager(String initials) {
         this.initials = initials;
@@ -47,7 +47,7 @@ public class Manager {
 
     public void assignActivity(String initials, String activity, String project) {
         if (initials != null)
-            getActivity(activity, project).addDeveloper(respMap.get(project).getDeveloperMap().get(initials));
+            getActivity(activity, project).addDeveloper(getDeveloper(initials, project));
     }
 
     public void unassignDeveloper(String initials, String activity, String project) throws CustomException {
@@ -83,7 +83,7 @@ public class Manager {
     }
 
     public void removeResp(String project) {
-        respMap.get(project).setManager(null);
+        getProject(project).setManager(null);
         respMap.remove(project);
     }
 
@@ -91,12 +91,8 @@ public class Manager {
         return respMap.get(project);
     }
 
-
-
-
-
-    private Developer getDeveloper(String initials) {
-        return model.getDeveloperMap().get(initials);
+    private Developer getDeveloper(String initials, String project) {
+        return getProject(project).getDeveloperMap().get(initials);
     }
 
     public Object[] getDevelopers(String project) throws CustomException {
@@ -128,8 +124,6 @@ public class Manager {
     }
 
 
-
-
     public Object[][] getActivityData(String project) {
         return Activity.getData(respMap.get(project).getActivityMap());
     }
@@ -138,11 +132,8 @@ public class Manager {
         return Developer.getData(respMap.get(project).getDeveloperMap());
     }
 
-
-
-
     public Component setupDeveloperTap() {
-        devUi = new DeveloperUi(getDeveloper(initials));
+        devUi = new DeveloperUi(model.getDeveloper(initials));
         return devUi.getContentPane();
     }
 
@@ -163,9 +154,12 @@ public class Manager {
         return developers;
     }
 
-    /*
-    public void refreshTap(String tabTitle) {
-
+    public void refreshTab(int index, ManagerUi manUi) {
+        if (index == 0)
+            manUi.update();
+        else if (index == 1)
+            devUi.update();
+        else
+            adminUi.update();
     }
-    */
 }

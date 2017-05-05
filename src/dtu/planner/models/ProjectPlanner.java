@@ -50,4 +50,16 @@ public class ProjectPlanner {
     public Map<String, Developer> getDeveloperMap() {
         return developerMap;
     }
+
+    public Developer getDeveloper(String initials) {
+        return developerMap.get(initials);
+    }
+
+    public int getProjectCount() {
+        return projectCount;
+    }
+
+    public int incrementProjectCount() {
+        return ++projectCount;
+    }
 }
