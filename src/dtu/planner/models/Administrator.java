@@ -141,4 +141,5 @@ public class Administrator {
     public Boolean hasManager(String project) {
         return getProject(project).hasManager();
     }
+
 }

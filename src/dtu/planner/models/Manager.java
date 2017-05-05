@@ -87,9 +87,7 @@ public class Manager {
         respMap.remove(project);
     }
 
-    private Project getProject(String project) {
-        return respMap.get(project);
-    }
+
 
     private Developer getDeveloper(String initials, String project) {
         return getProject(project).getDeveloperMap().get(initials);
@@ -114,6 +112,9 @@ public class Manager {
         return getProject(project).getActivityMap().get(activity);
     }
 
+    private Project getProject(String project) {
+        return respMap.get(project);
+    }
 
     public boolean hasDeveloper(String project) {
         return !getProject(project).getDeveloperMap().isEmpty();
@@ -133,7 +134,7 @@ public class Manager {
     }
 
     public Component setupDeveloperTap() {
-        devUi = new DeveloperUi(model.getDeveloper(initials));
+        devUi = new DeveloperUi(model.getDeveloper(initials), model);
         return devUi.getContentPane();
     }
 

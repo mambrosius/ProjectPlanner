@@ -1,17 +1,18 @@
 package dtu.planner.ui;
 
-import dtu.planner.models.Absence;
-import dtu.planner.models.Activity;
-import dtu.planner.models.Date;
-import dtu.planner.models.Developer;
+import dtu.planner.exceptions.CustomException;
+import dtu.planner.models.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class DeveloperUi extends JFrame {
 
     private Date date = new Date();
 
+    private ProjectPlanner temp;
     private Developer dev;
 
     private JPanel devPanel;
@@ -21,20 +22,24 @@ public class DeveloperUi extends JFrame {
     private JTable activityTable;
     private JLabel dateLabel;
     private JLabel initialsLabel;
-    private JButton sendButton;
+    private JButton sendRequestButton;
     private JButton registerButton;
-    private JTabbedPane tabbedPane1;
-    private JComboBox comboBox1;
-    private JComboBox comboBox2;
-    private JTabbedPane tabbedPane2;
-    private JComboBox comboBox3;
+    private JComboBox<Object> activityReqBox;
+
+    private JComboBox<Object> devReqBox;
+    private DefaultComboBoxModel<Object> devReqModel;
+
+    private JComboBox<Activity> replyBox;
     private JComboBox<Absence> absenceBox;
     private JButton acceptButton1;
     private JButton denyButton1;
+    private JLabel replyLabel;
 
-    public DeveloperUi(Developer developer) {
+    public DeveloperUi(Developer developer, ProjectPlanner model) {
 
+        this.temp = model;
         this.dev = developer;
+        this.dev.setProjectPlanner(model);
         setup();
 
         logActivityButton.addActionListener(e -> {
@@ -44,6 +49,30 @@ public class DeveloperUi extends JFrame {
             updateActivityTable(dev.getActivityData());
         });
 
+        sendRequestButton.addActionListener(e -> {
+            try {
+                dev.seekAssistance(getSelectedActivity(), model.getDeveloper(getSelectedDev()));
+            } catch (CustomException ex) {
+                showMessageDialog(ex.getMessage());
+            }
+        });
+
+        activityReqBox.addActionListener(e -> {
+            if (dev.hasActivity()) {
+                devReqModel = new DefaultComboBoxModel<>(dev.getAvailableDevelopers(getSelectedActivity()));
+                devReqBox.setModel(devReqModel);
+            }
+        });
+
+        acceptButton1.addActionListener(e -> {
+            dev.replyReq(getSelectedReq(), true);
+            update();
+        });
+
+        denyButton1.addActionListener(e -> {
+            dev.replyReq(getSelectedReq(), false);
+            update();
+        });
     }
 
     private void setup() {
@@ -60,11 +89,9 @@ public class DeveloperUi extends JFrame {
         activityTableModel = new DefaultTableModel(Activity.getColumnNames(), 0);
         activityTable.setModel(activityTableModel);
 
-        DefaultComboBoxModel<Absence> absenceModel = new DefaultComboBoxModel<>(Absence.values());
-        absenceBox.setModel(absenceModel);
+        absenceBox.setModel(new DefaultComboBoxModel<>(Absence.values()));
 
-        if (dev.hasActivity())
-            updateActivityTable(dev.getActivityData());
+        update();
     }
 
     private void updateActivityTable(Object[][] activityData) {
@@ -72,6 +99,61 @@ public class DeveloperUi extends JFrame {
     }
 
     public void update() {
-        updateActivityTable(dev.getActivityData());
+        if (dev.hasActivity())
+            updateActivityTable(dev.getActivityData());
+
+        DefaultComboBoxModel<Object> activityReqModel = new DefaultComboBoxModel<>(dev.getActivities());
+        activityReqBox.setModel(activityReqModel);
+
+        if (dev.hasActivity()) {
+            DefaultComboBoxModel<Object> devReqModel =
+                    new DefaultComboBoxModel<>(dev.getAvailableDevelopers(getSelectedActivity()));
+            devReqBox.setModel(devReqModel);
+        }
+
+        DefaultComboBoxModel<Activity> replyBoxModel = new DefaultComboBoxModel<>();
+
+        for (Activity activity : dev.getReqMap().values()) {
+            System.out.print(activity.getName());
+            replyBoxModel.addElement(activity);
+        }
+
+        if (dev.getReqMap().isEmpty()) {
+            replyBox.setVisible(false);
+            acceptButton1.setVisible(false);
+            denyButton1.setVisible(false);
+            replyLabel.setText("no requests");
+        } else {
+            replyBox.setVisible(true);
+            acceptButton1.setVisible(true);
+            denyButton1.setVisible(true);
+            replyBox.setModel(replyBoxModel);
+            replyLabel.setText("request from " + getSelectedReq().getProjectName());
+        }
     }
+
+    public String getSelectedActivity() {
+        return activityReqBox.getSelectedItem().toString();
+    }
+
+    public String getSelectedDev() {
+        return devReqBox.getSelectedItem().toString();
+    }
+
+    public Activity getSelectedReq() {
+        return (Activity) replyBox.getSelectedItem();
+    }
+
+    private Activity getActivity(String activity, String project) {
+        return getProject(project).getActivityMap().get(activity);
+    }
+
+    private Project getProject(String project) {
+        return temp.getProjectMap().get(project);
+    }
+
+    public void showMessageDialog(String message) {
+        JOptionPane.showMessageDialog(null, message);
+    }
+
 }

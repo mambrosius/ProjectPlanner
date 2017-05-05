@@ -15,7 +15,7 @@ public class Activity {
 
     private Map<String, Developer> developerMap = new HashMap<>();
 
-    private static final String[] columnNames = new String[]{"name", "developers", "estimated hours", "remaining hours"};
+    private static final String[] columnNames = new String[]{"name", "project", "developers", "estimated hours", "remaining hours"};
 
     //private startWeek;
     //private endWeek;
@@ -33,7 +33,7 @@ public class Activity {
         return name;
     }
 
-    String getProjectName() {
+    public String getProjectName() {
         return project;
     }
 
@@ -70,9 +70,10 @@ public class Activity {
         Object[][] activityData = new Object[activities.size()][columnNames.length];
         for (int i = 0; i < activities.size(); i++) {
             activityData[i][0] = activities.get(i).getName();
-            activityData[i][1] = activities.get(i).getDeveloperMap().size();
-            activityData[i][2] = activities.get(i).getEstimatedHours();
-            activityData[i][3] = activities.get(i).getRemainingHours();
+            activityData[i][1] = activities.get(i).getProjectName();
+            activityData[i][2] = activities.get(i).getDeveloperMap().size();
+            activityData[i][3] = activities.get(i).getEstimatedHours();
+            activityData[i][4] = activities.get(i).getRemainingHours();
         }
         return activityData;
     }
@@ -94,4 +95,8 @@ public class Activity {
     void editWorkHours(Double hours) {
     }
     */
+
+    public String toString() {
+        return getName();
+    }
 }

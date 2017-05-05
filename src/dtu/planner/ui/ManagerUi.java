@@ -64,20 +64,24 @@ public class ManagerUi extends JFrame {
                     showMessageDialog(ex.getMessage());
                 }
             } catch (ArrayIndexOutOfBoundsException ex) {
-                showMessageDialog("select an activity");
+
             }
         });
 
         assignDeveloperButton.addActionListener(e -> {
             try {
                 String name = getSelectedActivity();
-                String initials = showInputBoxDialog("Select developer",
-                        man.getAvailableDevelopers(name, getSelectedResp()));
-                man.assignActivity(initials, name, getSelectedResp());
-                updateDeveloperTable(man.getDeveloperData(getSelectedResp()));
-                updateActivityTable(man.getActivityData(getSelectedResp()));
-            } catch (Exception ex) {
-                showMessageDialog(ex.getMessage());
+                try {
+                    String initials = showInputBoxDialog("Select developer",
+                            man.getAvailableDevelopers(name, getSelectedResp()));
+                    man.assignActivity(initials, name, getSelectedResp());
+                    updateDeveloperTable(man.getDeveloperData(getSelectedResp()));
+                    updateActivityTable(man.getActivityData(getSelectedResp()));
+                } catch (Exception ex) {
+                    showMessageDialog(ex.getMessage());
+                }
+            } catch (ArrayIndexOutOfBoundsException ex) {
+                showMessageDialog("select an activity");
             }
         });
 

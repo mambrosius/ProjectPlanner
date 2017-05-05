@@ -32,7 +32,7 @@ public class ProjectPlanner {
             manUi.setVisible(true);
             return true;
         } else if (developerMap.containsKey(initials)) {
-            DeveloperUi devUi = new DeveloperUi(developerMap.get(initials));
+            DeveloperUi devUi = new DeveloperUi(developerMap.get(initials), this);
             devUi.setVisible(true);
             return true;
         } else
