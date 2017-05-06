@@ -3,7 +3,7 @@ package dtu.planner.models;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-public class Date {
+public class DateServer {
 
     public Calendar get() {
         return new GregorianCalendar();

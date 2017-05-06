@@ -5,12 +5,10 @@ import dtu.planner.models.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class DeveloperUi extends JFrame {
 
-    private Date date = new Date();
+    private DateServer date = new DateServer();
 
     private ProjectPlanner temp;
     private Developer dev;

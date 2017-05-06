@@ -161,6 +161,6 @@ public class Manager {
         else if (index == 1)
             devUi.update();
         else
-            adminUi.update();
+            adminUi.updateView();
     }
 }

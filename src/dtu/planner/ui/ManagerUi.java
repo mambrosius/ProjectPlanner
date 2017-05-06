@@ -11,7 +11,7 @@ import java.awt.event.WindowEvent;
 
 public class ManagerUi extends JFrame {
 
-    private Date date = new Date();
+    private DateServer date = new DateServer();
 
     private Manager man;
 

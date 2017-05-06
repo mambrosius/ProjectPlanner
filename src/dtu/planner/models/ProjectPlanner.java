@@ -3,7 +3,6 @@ package dtu.planner.models;
 import dtu.planner.ui.AdministratorUi;
 import dtu.planner.ui.DeveloperUi;
 import dtu.planner.ui.ManagerUi;
-import dtu.planner.ui.ProjectPlannerUi;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -12,6 +11,8 @@ import java.util.Map;
 public class ProjectPlanner {
 
     private int projectCount = 0;
+
+    private DateServer dateServer = new DateServer();
 
     private Map<String, Project> projectMap = new HashMap<>();
     private Map<String, Manager> managerMap = new HashMap<>();
@@ -61,5 +62,20 @@ public class ProjectPlanner {
 
     public int incrementProjectCount() {
         return ++projectCount;
+    }
+
+    public DateServer getDateServer() {
+        return dateServer;
+    }
+
+    public void addManager(String initials, String project) {
+        managerMap.putIfAbsent(initials, new Manager(initials));
+        managerMap.get(initials).addResp(projectMap.get(project));
+    }
+
+    public void removeManager(String initials, String project) {
+        managerMap.get(initials).removeResp(project);
+        if (managerMap.get(initials).getRespMap().isEmpty())
+            managerMap.remove(initials);
     }
 }

@@ -1,7 +1,5 @@
 package dtu.planner.app;
-//import static dtu.planner.app.ProjectPlanner.app;
-
-//import com.intellij.util.xmlb.annotations.Text;
+import dtu.planner.models.Administrator;
 import dtu.planner.models.Developer;
 import dtu.planner.models.Project;
 import org.junit.*;
@@ -10,10 +8,8 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-/**
- * Created by Branavan on 27-04-2017.
- */
-public class AdminTest {/*
+public class AdminTest {
+    /*
     Administrator admin = new Administrator();
 
     //Registrere en udvikler
@@ -71,5 +67,6 @@ public class AdminTest {/*
         assertEquals("pro1",pros.get(0).getName());
         assertEquals("pro3",pros.get(1).getName());
     }
+
     */
 }
