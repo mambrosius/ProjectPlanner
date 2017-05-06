@@ -1,8 +1,5 @@
 package dtu.planner.app;
 
-import dtu.planner.models.Developer;
-import dtu.planner.models.Project;
-
 import static org.junit.Assert.assertEquals;
 
 class ProjectTestSetup {/*

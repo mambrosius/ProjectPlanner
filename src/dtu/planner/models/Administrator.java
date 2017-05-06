@@ -22,55 +22,55 @@ public class Administrator {
         if (name != null)
             if (name.equals(""))
                 throw new CustomException("Missing input");
-            else if (model.getProjectMap().putIfAbsent(name, new Project(generateProjectNumber(), name)) != null)
+            else if (getProjects().putIfAbsent(name, new Project(generateProjectNumber(), name)) != null)
                 throw new CustomException(name + " already exists");
     }
 
-    public void unregisterProject(String name) {
-        if (showConfirmDialog("unregister " + name + "?") == JOptionPane.YES_OPTION)
-            model.getProjectMap().remove(name);
+    public void unregisterProject(String name, int option) {
+        if (option == JOptionPane.YES_OPTION)
+            getProjects().remove(name);
     }
 
     public void registerDeveloper(String initials) throws CustomException {
         if (initials != null)
             if (initials.equals(""))
                 throw new CustomException("Missing input");
-            else if (model.getDeveloperMap().putIfAbsent(initials, new Developer(initials)) != null)
+            else if (getDevelopers().putIfAbsent(initials, new Developer(initials)) != null)
                 throw new CustomException(initials + " already exists");
     }
 
-    public void unregisterDeveloper(String initials) {
-        if (showConfirmDialog("unregister " + initials + "?") == JOptionPane.YES_OPTION)
-            model.getDeveloperMap().remove(initials);
+    public void unregisterDeveloper(String initials, int option) {
+        if (option == JOptionPane.YES_OPTION)
+            getDevelopers().remove(initials);
     }
 
-    public void assignDeveloper(String project) throws CustomException {
-        String initials = showInputBoxDialog("Select developer", getAvailableDevelopers(project));
+    public void assignDeveloper(Object initials, Object project) throws CustomException {
+        //String initials = showInputBoxDialog(getAvailableDevelopers(project));
         if (initials != null) {
-            getProject(project).addDeveloper(getDeveloper(initials));
-            if (getProject(project).getDeveloperMap().size() == 0)
-                assignManager(project);
+            getProject(project.toString()).addDeveloper(getDeveloper(initials.toString()));
         }
     }
 
-    public void unassignDeveloper(String project) throws CustomException {
+    public void assign(Object project, Object initials, boolean manager) throws CustomException {
 
-        String initials = showInputBoxDialog("Select developer", getAssignedDevelopers(project));
-        if (initials != null) {
-            if (showConfirmDialog("unassign " + initials + "?") == JOptionPane.YES_OPTION) {
-                if (getProject(project).getManager() != null & getProject(project).getManager().equals(initials))
-                    throw new CustomException("cannot unassign " + initials + " when manager");
-                getProject(project).removeDeveloper(initials);
-            }
+        assignDeveloper(initials, project);
+        if (manager) {
+            assignManager(project.toString(), initials.toString());
         }
+
     }
 
-    public void assignManager(String project) throws CustomException {
-        if (getProject(project).getManager() != null)
-            throw new CustomException("manager is already assigned");
-        String initials = showInputBoxDialog("Select developer", getAssignedDevelopers(project));
-        if (showConfirmDialog("assign " + initials + " as manager?") == JOptionPane.YES_OPTION)
-            model.addManager(initials, project);
+    public void unassignDeveloper(String initials, String project) throws CustomException {
+        if (initials != null) {
+            if (getProject(project).hasManager() && getProject(project).getManager().equals(initials))
+                model.removeManager(initials, project);
+            getProject(project).removeDeveloper(initials);
+
+            //if (showConfirmDialog("unassign " + initials + "?") == JOptionPane.YES_OPTION) {
+                //if (getProject(project).getManager() != null & initials.equals(getProject(project).getManager()));//.equals(initials))
+                  //  throw new CustomException("cannot unassign " + initials + " when manager");
+            //}
+        }
     }
 
     public void unassignManager(String project) throws CustomException {
@@ -80,6 +80,14 @@ public class Administrator {
         if (showConfirmDialog("unassign " + initials + " as manager?") == JOptionPane.YES_OPTION) {
             model.removeManager(initials, project);
         }
+    }
+
+    public void assignManager(String project, String initials) throws CustomException {
+        if (getProject(project).getManager() != null)
+            throw new CustomException("manager is already assigned");
+
+        //if (showConfirmDialog("assign " + initials + " as manager?") == JOptionPane.YES_OPTION)
+        model.addManager(initials, project);
     }
 
     private String generateProjectNumber() {
@@ -93,25 +101,25 @@ public class Administrator {
     }
 
     private Project getProject(String name) {
-        return model.getProjectMap().get(name);
+        return getProjects().get(name);
     }
 
     private Developer getDeveloper(String initials) {
-        return model.getDeveloperMap().get(initials);
+        return getDevelopers().get(initials);
     }
 
-
-    private Object[] getAvailableDevelopers(String project) throws CustomException {
-        List<String> availableDevelopers = new ArrayList<>(model.getDeveloperMap().keySet());
-        availableDevelopers.removeAll(getProject(project).getDeveloperMap().keySet());
-        if (availableDevelopers.size() == 0)
-            throw new CustomException("could not find any developers");
+    public Object[] getAvailableDevelopers(Object project) { // throws CustomException
+        List<String> availableDevelopers = new ArrayList<>(getDevelopers().keySet());
+        if (project != null)
+            availableDevelopers.removeAll(getProject(project.toString()).getDeveloperMap().keySet());
+        //if (availableDevelopers.size() == 0)
+            //throw new CustomException("could not find any developers");
         return  availableDevelopers.toArray();
     }
 
-    private Object[] getAssignedDevelopers(String project) throws CustomException {
-        if (model.getProjectMap().get(project).getDeveloperMap().isEmpty())
-            throw new CustomException("could not find any developers");
+    public Object[] getAssignedDevelopers(String project) { //} throws CustomException {
+        //if (getProject(project).getDeveloperMap().isEmpty())
+          //  throw new CustomException("could not find any developers");
         return getProject(project).getDeveloperMap().keySet().toArray();
     }
 
@@ -120,21 +128,38 @@ public class Administrator {
     }
 
     public void updateProjectTable(DefaultTableModel projectModel) {
-        projectModel.setDataVector(Project.getData(model.getProjectMap()), Project.getColumnNames());
+        projectModel.setDataVector(Project.getData(getProjects()), Project.getColumnNames());
     }
 
     public void updateDeveloperTable(DefaultTableModel developerModel) {
-        developerModel.setDataVector(Developer.getData(model.getDeveloperMap()), Developer.getColumnNames());
+        developerModel.setDataVector(Developer.getData(getDevelopers()), Developer.getColumnNames());
     }
 
     private int showConfirmDialog(String message) {
         return JOptionPane.showConfirmDialog(null, message, "Warning", JOptionPane.YES_NO_OPTION);
     }
 
-    private String showInputBoxDialog(String message, Object[] keys) {
-        return (String) JOptionPane.showInputDialog(null, message, "Select",
-                JOptionPane.INFORMATION_MESSAGE, null, keys, "");
+    public Map<String, Project> getProjects() {
+        return model.getProjectMap();
     }
 
-    //public Map<String, Project> getProjects()
+    public Map<String, Developer> getDevelopers() {
+        return model.getDeveloperMap();
+    }
+
+    public void register(Object selectedItem, String id) throws CustomException {
+        if (selectedItem.equals("project"))
+            registerProject(id);
+        else
+            registerDeveloper(id);
+    }
+
+    public void unregister(Object selectedItem, String id) throws CustomException{
+        if (id == null)
+            throw new CustomException("select a " + selectedItem);
+        if (selectedItem.equals("project"))
+            unregisterProject(id, 0);
+        else
+            unregisterDeveloper(id,0);
+    }
 }

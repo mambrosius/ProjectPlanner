@@ -11,97 +11,112 @@ public class AdministratorUi extends JFrame {
     private Administrator admin;
 
     private JPanel adminPanel;
+    private JPanel registerPanel;
     private JLabel dateLabel;
-
-    private JButton registerProjectButton;
-    private JButton unregisterProjectButton;
-    private JButton registerDeveloperButton;
-    private JButton unregisterDeveloperButton;
-    private JButton assignDeveloperButton;
-    private JButton unassignDeveloperButton;
-    private JButton assignManagerButton;
-    private JButton unassignManagerButton;
+    private JLabel registerLabel;
+    private JLabel unregisterLabel;
+    private JTextField inputTextField;
 
     private DefaultTableModel projectTableModel = new DefaultTableModel(Project.getColumnNames(), 0);
     private DefaultTableModel developerTableModel = new DefaultTableModel(Developer.getColumnNames(), 0);
     private JTable projectTable;
     private JTable developerTable;
 
+    private JCheckBox asManagerCheckBox;
+    private JComboBox registerTypeBox;
+    private JComboBox unregisterTypeBox;
+    private JComboBox<Object> projectAssignBox;
+    private JComboBox<Object> projectUnassignBox;
+    private JComboBox<Object> devAssignBox;
+    private JComboBox<Object> devUnassignBox;
+    private JComboBox<Object> unregisterBox;
+
+    private JButton assignButton;
+    private JButton unassignButton;
+    private JButton registerButton;
+    private JButton unregisterButton;
+
     public AdministratorUi(ProjectPlanner projectPlanner) {
 
         this.admin = new Administrator(projectPlanner);
         setup();
 
-        registerProjectButton.addActionListener(e -> {
+        registerButton.addActionListener(e -> {
             try {
-                admin.registerProject(showInputDialog("name the project"));
+                admin.register(registerTypeBox.getSelectedItem(), inputTextField.getText().toLowerCase());
+            } catch (CustomException ex) {
+                showMessageDialog(ex.getMessage());
+            } finally {
+                updateView();
+            }
+        });
+
+        unregisterButton.addActionListener(e -> {
+            try {
+                admin.unregister(unregisterTypeBox.getSelectedItem(), unregisterBox.getSelectedItem().toString());
+            } catch (CustomException ex) {
+                showMessageDialog(ex.getMessage());
+            } finally {
+                updateView();
+            }
+        });
+
+        assignButton.addActionListener(e -> {
+            try {
+                admin.assign(projectAssignBox.getSelectedItem(), devAssignBox.getSelectedItem(), asManagerCheckBox.isSelected());
+                updateView();
+            } catch (CustomException ex) {
+                showMessageDialog(ex.getMessage());
+            } finally {
+                updateView();
+            }
+        });
+
+        unassignButton.addActionListener(e -> {
+            try {
+                admin.unassignDeveloper(devUnassignBox.getSelectedItem().toString(), projectUnassignBox.getSelectedItem().toString());
                 updateView();
             } catch (CustomException ex) {
                 showMessageDialog(ex.getMessage());
             }
         });
 
-        unregisterProjectButton.addActionListener(e -> {
-            try {
-                admin.unregisterProject(getSelectedProject());
-                updateView();
-            } catch (CustomException ex) {
-                showMessageDialog("select a project");
-            }
+        projectAssignBox.addActionListener(e -> {
+            if (!admin.getProjects().isEmpty())
+                if (asManagerCheckBox.isSelected()) {
+                    devAssignBox.setModel(new DefaultComboBoxModel<>(admin.getDevelopers().keySet().toArray()));
+                } else {
+                    devAssignBox.setModel(new DefaultComboBoxModel<>(admin.getAvailableDevelopers(projectAssignBox.getSelectedItem())));
+                }
         });
 
-        registerDeveloperButton.addActionListener(e -> {
-            try {
-                admin.registerDeveloper(showInputDialog("type initials"));
-                updateView();
-            } catch (CustomException ex) {
-                showMessageDialog(ex.getMessage());
-            }
+        projectUnassignBox.addActionListener(e -> {
+            if (!admin.getProjects().isEmpty())
+                devUnassignBox.setModel(new DefaultComboBoxModel<>(admin.getAssignedDevelopers(projectAssignBox.getSelectedItem().toString())));
         });
 
-        unregisterDeveloperButton.addActionListener(e -> {
-            try {
-                admin.unregisterDeveloper(getSelectedDeveloper());
-                updateView();
-            } catch (ArrayIndexOutOfBoundsException ex) {
-                showMessageDialog("select a developer");
-            }
+        registerTypeBox.addActionListener(e -> {
+            if (registerTypeBox.getSelectedItem().equals("developer"))
+                registerLabel.setText("initials");
+            else
+                registerLabel.setText("name");
         });
 
-        assignDeveloperButton.addActionListener(e -> {
-            try {
-                admin.assignDeveloper(getSelectedProject());
-                updateView();
-            } catch (CustomException ex) {
-                showMessageDialog(ex.getMessage());
-            }
+        unregisterTypeBox.addActionListener(e -> {
+            if (unregisterTypeBox.getSelectedItem().equals("developer"))
+                registerLabel.setText("initials");
+            else
+                registerLabel.setText("name");
+            updateView();
         });
 
-        unassignDeveloperButton.addActionListener(e -> {
-            try {
-                admin.unassignDeveloper(getSelectedProject());
-                updateView();
-            } catch (CustomException ex) {
-                showMessageDialog(ex.getMessage());
-            }
-        });
-
-        assignManagerButton.addActionListener(e -> {
-            try {
-                admin.assignManager(getSelectedProject());
-                updateView();
-            } catch (CustomException ex) {
-                showMessageDialog(ex.getMessage());
-            }
-        });
-
-        unassignManagerButton.addActionListener(e -> {
-            try {
-                admin.unassignManager(getSelectedProject());
-                updateView();
-            } catch (CustomException ex) {
-                showMessageDialog(ex.getMessage());
-            }
+        asManagerCheckBox.addActionListener(e -> {
+            if (!admin.getProjects().isEmpty())
+                if (asManagerCheckBox.isSelected()) {
+                    devAssignBox.setModel(new DefaultComboBoxModel<>(admin.getDevelopers().keySet().toArray()));
+                } else {
+                    devAssignBox.setModel(new DefaultComboBoxModel<>(admin.getAvailableDevelopers(projectAssignBox.getSelectedItem())));
+                }
         });
     }
 
@@ -113,33 +128,41 @@ public class AdministratorUi extends JFrame {
         setLocationRelativeTo(null);
 
         dateLabel.setText(admin.getDateServer().toString());
+        registerLabel.setText("name");
+        unregisterLabel.setText("name");
 
         projectTable.setModel(projectTableModel);
         developerTable.setModel(developerTableModel);
+
+        registerPanel.getRootPane().setDefaultButton(registerButton);
+
         updateView();
     }
 
     public void updateView() {
         admin.updateProjectTable(projectTableModel);
         admin.updateDeveloperTable(developerTableModel);
-    }
 
-    private String getSelectedProject() throws CustomException {
-        try {
-            return (String) projectTable.getValueAt(projectTable.getSelectedRow(), 1);
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            throw new CustomException("select a project");
+        inputTextField.setText("");
+
+        projectAssignBox.setModel(new DefaultComboBoxModel<>(admin.getProjects().keySet().toArray()));
+        if (!admin.getProjects().isEmpty()) {
+            devAssignBox.setModel(new DefaultComboBoxModel<>(admin.getAvailableDevelopers(projectAssignBox.getSelectedItem())));
+            if (admin.getProjects().get(projectAssignBox.getSelectedItem().toString()).hasManager()) {
+                asManagerCheckBox.setSelected(false);
+                asManagerCheckBox.setVisible(false);
+            } else
+                asManagerCheckBox.setVisible(true);
         }
-    }
+        projectUnassignBox.setModel(new DefaultComboBoxModel<>(admin.getProjects().keySet().toArray()));
+        if (!admin.getProjects().isEmpty())
+            devUnassignBox.setModel(new DefaultComboBoxModel<>(admin.getAssignedDevelopers(projectUnassignBox.getSelectedItem().toString())));
 
-    private String getSelectedDeveloper() {
-        return (String) developerTable.getValueAt(developerTable.getSelectedRow(), 0);
+        if (unregisterTypeBox.getSelectedItem().equals("project"))
+            unregisterBox.setModel(new DefaultComboBoxModel<>(admin.getProjects().keySet().toArray()));
+        else
+            unregisterBox.setModel(new DefaultComboBoxModel<>(admin.getDevelopers().keySet().toArray()));
     }
-
-    private String showInputDialog(String message) {
-        return JOptionPane.showInputDialog(null, message, "").toLowerCase();
-    }
-
     private void showMessageDialog(String message) {
         JOptionPane.showMessageDialog(null, message);
     }

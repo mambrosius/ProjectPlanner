@@ -5,6 +5,6 @@
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="src" path="exceptions"/>
 	<classpathentry kind="src" path="ui"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/-4.12.jar"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/-4.12.jar"/>
 	<classpathentry kind="output" path="out/production/ProjectPlanner"/>
 </classpath>

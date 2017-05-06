@@ -1,12 +1,4 @@
 package dtu.planner.app;
-import dtu.planner.models.Administrator;
-import dtu.planner.models.Developer;
-import dtu.planner.models.Project;
-import org.junit.*;
-
-import java.util.List;
-
-import static org.junit.Assert.*;
 
 public class AdminTest {
     /*

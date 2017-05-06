@@ -43,7 +43,7 @@ public class Project {
     }
 
     public void addDeveloper(Developer dev) {
-        developerMap.put(dev.getInitials(), dev);
+        developerMap.putIfAbsent(dev.getInitials(), dev);
     }
 
     void setManager(String initials) {
