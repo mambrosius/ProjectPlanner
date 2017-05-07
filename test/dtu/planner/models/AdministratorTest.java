@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 import static org.junit.Assert.*;
 
@@ -12,113 +13,211 @@ public class AdministratorTest {
 
     private ProjectPlanner pp = new ProjectPlanner();
     private Administrator admin = new Administrator(pp);
+
+    private String PROJECT = "project";
+    private String DEVELOPER = "developer";
+
     private String projectName = "project1";
     private String devInitials = "dev1";
+    private String newComer = "roki";
 
     @Test
-    public void registerProject() throws Exception {
+    public void register() throws Exception {
         try {
-            assertTrue(admin.getProjects().isEmpty());
-            admin.registerProject(projectName);
-            assertEquals(1, admin.getProjects().size());
+            assertTrue(admin.getProjects().length == 0);
+            assertTrue(admin.getDevelopers().length == 0);
+
+            admin.register(PROJECT, projectName);
+            assertTrue(admin.getProjects().length == 1);
+            assertTrue(admin.getDevelopers().length == 0);
         } catch (CustomException ex) {
             fail();
         }
 
         try {
-            admin.registerProject(projectName);
+            admin.register(DEVELOPER, devInitials);
+            assertTrue(admin.getProjects().length == 1);
+            assertTrue(admin.getDevelopers().length == 1);
+        } catch (CustomException ex) {
+            fail();
+        }
+
+        try {
+            admin.register(PROJECT, projectName);
             fail();
         } catch (CustomException ex) {
             assertEquals(projectName + " already exists", ex.getMessage());
         }
-    }
-
-    @Test
-    public void unregisterProject() throws Exception {
-        registerProject();
-
-        admin.unregisterProject(projectName, JOptionPane.CLOSED_OPTION);
-        assertEquals(1, admin.getProjects().size());
-
-        admin.unregisterProject(projectName, JOptionPane.NO_OPTION);
-        assertEquals(1, admin.getProjects().size());
-
-        admin.unregisterProject(projectName, JOptionPane.YES_OPTION);
-        assertTrue(admin.getProjects().isEmpty());
-    }
-
-    @Test
-    public void registerDeveloper() throws Exception {
-        try {
-            assertTrue(admin.getDevelopers().isEmpty());
-            admin.registerDeveloper(devInitials);
-            assertEquals(1, admin.getDevelopers().size());
-        } catch (CustomException ex) {
-            fail();
-        }
 
         try {
-            admin.registerDeveloper(devInitials);
+            admin.register(DEVELOPER, devInitials);
             fail();
         } catch (CustomException ex) {
             assertEquals(devInitials + " already exists", ex.getMessage());
         }
+
+        try {
+            admin.register(PROJECT, "");
+            fail();
+        } catch (CustomException ex) {
+            assertEquals("no input", ex.getMessage());
+        }
+
+        try {
+            admin.register(DEVELOPER, "");
+            fail();
+        } catch (CustomException ex) {
+            assertEquals("no input", ex.getMessage());
+        }
     }
 
     @Test
-    public void unregisterDeveloper() throws Exception {
-        registerDeveloper();
+    public void unregister() throws Exception {
+        register();
 
-        admin.unregisterDeveloper(devInitials, JOptionPane.CLOSED_OPTION);
-        assertEquals(1, admin.getDevelopers().size());
+        try {
+            admin.unregister(PROJECT, projectName);
+            assertTrue(admin.getProjects().length == 0);
+            assertTrue(admin.getDevelopers().length == 1);
+        } catch (CustomException ex) {
+            fail();
+        }
 
-        admin.unregisterDeveloper(devInitials, JOptionPane.NO_OPTION);
-        assertEquals(1, admin.getDevelopers().size());
+        try {
+            admin.unregister(DEVELOPER, devInitials);
+            assertTrue(admin.getProjects().length == 0);
+            assertTrue(admin.getDevelopers().length == 0);
+        } catch (CustomException ex) {
+            fail();
+        }
 
-        admin.unregisterDeveloper(devInitials, JOptionPane.YES_OPTION);
-        assertTrue(admin.getDevelopers().isEmpty());
+        try {
+            admin.unregister(PROJECT, null);
+            fail();
+        } catch (CustomException ex) {
+            assertEquals("select a " + PROJECT, ex.getMessage());
+        }
+
+        try {
+            admin.unregister(DEVELOPER, null);
+            fail();
+        } catch (CustomException ex) {
+            assertEquals("select a " + DEVELOPER, ex.getMessage());
+        }
     }
 
-
-    /*
     @Test
-    public void assignDeveloper() throws Exception {
-        registerProject();
-        registerDeveloper();
+    public void assign() throws Exception {
+        register();
 
-        admin.assignDeveloper(projectName);
-    }*/
+        try {
+            admin.register(DEVELOPER, newComer);
+            assertEquals(2, admin.getDevelopers().length);
+        } catch (CustomException ex) {
+            fail();
+        }
 
-    @Test
-    public void unassignDeveloper() throws Exception {
+        assertEquals(0, admin.getAssignedDevelopers(projectName).length);
+        assertFalse(admin.getProject(projectName).hasManager());
+
+        try {
+            admin.assign(projectName, newComer, false);
+            assertEquals(1, admin.getAssignedDevelopers(projectName).length);
+            assertFalse(admin.getProject(projectName).hasManager());
+        } catch (CustomException ex) {
+            fail();
+        }
+
+        try {
+            admin.assign(projectName, devInitials, true);
+            assertEquals(2, admin.getAssignedDevelopers(projectName).length);
+            assertTrue(admin.getProject(projectName).hasManager());
+        } catch (CustomException ex) {
+            fail();
+        }
+
+        try {
+            admin.assign(projectName, null, true);
+            fail();
+        } catch (CustomException ex) {
+            assertEquals("select a project and a developer", ex.getMessage());
+        }
+
+        try {
+            admin.assign(null, devInitials, true);
+            fail();
+        } catch (CustomException ex) {
+            assertEquals("select a project and a developer", ex.getMessage());
+        }
+
+        try {
+            admin.assign(projectName, newComer, true);
+            fail();
+        } catch (CustomException ex) {
+            assertEquals("manager is already assigned", ex.getMessage());
+        }
     }
 
     @Test
-    public void assignManager() throws Exception {
+    public void unassign() throws Exception {
+        assign();
+
+        admin.unassign(projectName, newComer);
+        assertEquals(1, admin.getAssignedDevelopers(projectName).length);
+        assertTrue(admin.getProject(projectName).hasManager());
+
+        admin.unassign(projectName, devInitials);
+        assertEquals(0, admin.getAssignedDevelopers(projectName).length);
+        assertFalse(admin.getProject(projectName).hasManager());
     }
 
     @Test
-    public void unassignManager() throws Exception {
-    }
+    public void getAvailableDevelopers() throws Exception {
 
-    @Test
-    public void getDateServer() throws Exception {
+        admin.register(PROJECT, projectName);
+
+        for (int i = 0; i < 5; i++) {
+            String initials = "dev" + i;
+            admin.register(DEVELOPER, initials);
+        }
+
+        try {
+            admin.assign(projectName, "dev1", true);
+            assertEquals(4, admin.getAvailableDevelopers(projectName).length);
+
+            admin.register(DEVELOPER, newComer);
+            assertEquals(5, admin.getAvailableDevelopers(projectName).length);
+
+            admin.assign(projectName, "dev3", false);
+            admin.assign(projectName, "dev0", false);
+            assertEquals(3, admin.getAvailableDevelopers(projectName).length);
+        } catch (CustomException ex) {
+            fail();
+        }
     }
 
     @Test
     public void updateProjectTable() throws Exception {
+
     }
 
     @Test
     public void updateDeveloperTable() throws Exception {
+
     }
+
+    /*
+    public void updateProjectTable(DefaultTableModel projectModel) {
+        projectModel.setDataVector(Project.getData(model.getProjectMap()), Project.getColumnNames());
+    }
+
+    public void updateDeveloperTable(DefaultTableModel developerModel) {
+        developerModel.setDataVector(Developer.getData(model.getDeveloperMap()), Developer.getColumnNames());
+    }
+    */
 
     @Test
-    public void getProjects() throws Exception {
+    public void getDateServer() throws Exception {
+        // TODO: implement mock object
     }
-
-    @Test
-    public void getDevelopers() throws Exception {
-    }
-
 }

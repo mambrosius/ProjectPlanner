@@ -9,8 +9,8 @@ public class DeveloperTest extends DeveloperTestSetup {
         ppApp.registerDeveloper("MAA");
         ppApp.registerDeveloper("BA");
 
-        assertEquals("MAA", ppApp.getInitialsOfParticipants().get(0).getInitials());
-        assertEquals("BA", ppApp.getInitialsOfParticipants().get(1).getInitials());
+        assertEquals("MAA", ppApp.getInitialsOfParticipants().getDate(0).getInitials());
+        assertEquals("BA", ppApp.getInitialsOfParticipants().getDate(1).getInitials());
     }
 
     @Test
@@ -19,7 +19,7 @@ public class DeveloperTest extends DeveloperTestSetup {
         ppApp.registerDeveloper("MAA");
 
         ppApp.getDeveloper("MAA").assignProject(ppApp.getProject("Bachelor Thesis"));
-        assertEquals("MAA", ppApp.getProject("Bachelor Thesis").getInitialsOfParticipants().get(0).getInitials());
+        assertEquals("MAA", ppApp.getProject("Bachelor Thesis").getInitialsOfParticipants().getDate(0).getInitials());
     }
     */
 }

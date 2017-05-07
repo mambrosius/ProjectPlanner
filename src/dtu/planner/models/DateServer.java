@@ -3,9 +3,9 @@ package dtu.planner.models;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-public class DateServer {
+public class DateServer extends GregorianCalendar {
 
-    public Calendar get() {
+    public Calendar getDate() {
         return new GregorianCalendar();
     }
 

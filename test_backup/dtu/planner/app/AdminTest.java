@@ -10,7 +10,7 @@ public class AdminTest {
         admin.registerDeveloper("bran");
         List<Developer> devs = app.getDevelopers();
 
-        assertEquals("bran",devs.get(0).getInitials());
+        assertEquals("bran",devs.getDate(0).getInitials());
     }
 
 
@@ -37,9 +37,9 @@ public class AdminTest {
         admin.registerProject("pro3");
         List<Project> pros = app.getProjects();
 
-        assertEquals("pro1",pros.get(0).getName());
-        assertEquals("pro2",pros.get(1).getName());
-        assertEquals("pro3",pros.get(2).getName());
+        assertEquals("pro1",pros.getDate(0).getName());
+        assertEquals("pro2",pros.getDate(1).getName());
+        assertEquals("pro3",pros.getDate(2).getName());
     }
 
     //Slette 1 projekt ud af 3
@@ -56,8 +56,8 @@ public class AdminTest {
         pros = app.getProjects();
 
         //Eftertjekker om pro2 er slettet
-        assertEquals("pro1",pros.get(0).getName());
-        assertEquals("pro3",pros.get(1).getName());
+        assertEquals("pro1",pros.getDate(0).getName());
+        assertEquals("pro3",pros.getDate(1).getName());
     }
 
     */

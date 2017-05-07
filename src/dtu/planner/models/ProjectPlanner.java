@@ -5,6 +5,7 @@ import dtu.planner.ui.DeveloperUi;
 import dtu.planner.ui.ManagerUi;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,53 +20,41 @@ public class ProjectPlanner {
     private Map<String, Developer> developerMap = new HashMap<>();
 
     public Boolean adminLogin(char[] password) {
-        if (Arrays.equals(password, "admin".toCharArray())) {
+        Boolean login = (Arrays.equals(password, "admin".toCharArray()));
+        if (login) {
             AdministratorUi adminUi = new AdministratorUi(this);
             adminUi.setVisible(true);
-            return true;
-        } else
-            return false;
+        }
+        return login;
     }
 
     public Boolean devLogin(String initials) {
-        if (managerMap.containsKey(initials)) {
+        Boolean manLogin = managerMap.containsKey(initials);
+        Boolean devLogin = developerMap.containsKey(initials);
+        if (manLogin) {
             ManagerUi manUi = new ManagerUi(managerMap.get(initials), this);
             manUi.setVisible(true);
-            return true;
-        } else if (developerMap.containsKey(initials)) {
+        } else if (devLogin) {
             DeveloperUi devUi = new DeveloperUi(developerMap.get(initials), this);
             devUi.setVisible(true);
-            return true;
-        } else
-            return false;
+        }
+        return manLogin || devLogin;
     }
 
-    public Map<String, Project> getProjectMap() {
-        return projectMap;
+    public boolean addProjectIfAbsent(String name) {
+        return projectMap.putIfAbsent(name, new Project(generateProjectNumber(), name)) == null;
     }
 
-    public Map<String, Manager> getManagerMap() {
-        return managerMap;
+    public void removeProject(String projectName) {
+        projectMap.remove(projectName);
     }
 
-    public Map<String, Developer> getDeveloperMap() {
-        return developerMap;
+    public Boolean addDeveloperIfAbsent(String initials) {
+        return developerMap.putIfAbsent(initials, new Developer(initials)) == null;
     }
 
-    public Developer getDeveloper(String initials) {
-        return developerMap.get(initials);
-    }
-
-    public int getProjectCount() {
-        return projectCount;
-    }
-
-    public int incrementProjectCount() {
-        return ++projectCount;
-    }
-
-    public DateServer getDateServer() {
-        return dateServer;
+    public void removeDeveloper(String initials) {
+        developerMap.remove(initials);
     }
 
     public void addManager(String initials, String project) {
@@ -77,5 +66,31 @@ public class ProjectPlanner {
         managerMap.get(initials).removeResp(project);
         if (managerMap.get(initials).getRespMap().isEmpty())
             managerMap.remove(initials);
+    }
+
+    private String generateProjectNumber() {
+        String year = Integer.toString(dateServer.get(Calendar.YEAR)).substring(2);
+        String numberAsString = String.valueOf(++projectCount);
+        StringBuilder sb = new StringBuilder();
+        while (sb.length() + numberAsString.length() < 6)
+            sb.append('0');
+        sb.append(projectCount);
+        return year.concat(sb.toString());
+    }
+
+    public DateServer getDateServer() {
+        return dateServer;
+    }
+
+    public Developer getDeveloper(String initials) {
+        return developerMap.get(initials);
+    }
+
+    public Map<String, Project> getProjectMap() {
+        return projectMap;
+    }
+
+    public Map<String, Developer> getDeveloperMap() {
+        return developerMap;
     }
 }

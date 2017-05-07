@@ -31,7 +31,7 @@
           <component id="e5541" class="javax.swing.JTable" binding="projectTable">
             <constraints/>
             <properties>
-              <enabled value="false"/>
+              <enabled value="true"/>
               <font name="Monospaced"/>
             </properties>
           </component>
@@ -51,7 +51,7 @@
           <component id="eb5ab" class="javax.swing.JTable" binding="developerTable">
             <constraints/>
             <properties>
-              <enabled value="false"/>
+              <enabled value="true"/>
               <font name="Monospaced"/>
             </properties>
           </component>
@@ -86,7 +86,7 @@
         <properties/>
         <border type="none"/>
         <children>
-          <grid id="3915" layout-manager="GridLayoutManager" row-count="5" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="3915" layout-manager="GridLayoutManager" row-count="5" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="5" left="5" bottom="5" right="5"/>
             <constraints>
               <tabbedpane title="assign"/>
@@ -94,9 +94,9 @@
             <properties/>
             <border type="none"/>
             <children>
-              <component id="d788d" class="javax.swing.JComboBox" binding="projectAssignBox">
+              <component id="d788d" class="javax.swing.JComboBox" binding="assignToBox">
                 <constraints>
-                  <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                  <grid row="1" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
                   <model/>
@@ -104,12 +104,12 @@
               </component>
               <vspacer id="592de">
                 <constraints>
-                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+                  <grid row="0" column="1" row-span="1" col-span="2" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
                 </constraints>
               </vspacer>
               <vspacer id="9c0f9">
                 <constraints>
-                  <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+                  <grid row="4" column="1" row-span="1" col-span="2" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
                 </constraints>
               </vspacer>
               <component id="3d20f" class="javax.swing.JLabel">
@@ -135,44 +135,34 @@
               </component>
               <component id="6680b" class="javax.swing.JComboBox" binding="devAssignBox">
                 <constraints>
-                  <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                  <grid row="2" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties/>
               </component>
-              <grid id="8a948" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-                <margin top="0" left="0" bottom="0" right="0"/>
+              <component id="19eae" class="javax.swing.JButton" binding="assignButton" default-binding="true">
                 <constraints>
-                  <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
-                <properties/>
-                <border type="none"/>
-                <children>
-                  <component id="19eae" class="javax.swing.JButton" binding="assignButton" default-binding="true">
-                    <constraints>
-                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                    <properties>
-                      <font style="1"/>
-                      <foreground color="-16087531"/>
-                      <horizontalAlignment value="0"/>
-                      <horizontalTextPosition value="0"/>
-                      <text value="assign"/>
-                    </properties>
-                  </component>
-                  <component id="29013" class="javax.swing.JCheckBox" binding="asManagerCheckBox" default-binding="true">
-                    <constraints>
-                      <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                    <properties>
-                      <font style="1"/>
-                      <foreground color="-10000022"/>
-                      <horizontalAlignment value="10"/>
-                      <horizontalTextPosition value="10"/>
-                      <text value="as manager"/>
-                    </properties>
-                  </component>
-                </children>
-              </grid>
+                <properties>
+                  <font style="1"/>
+                  <foreground color="-16087531"/>
+                  <horizontalAlignment value="0"/>
+                  <horizontalTextPosition value="0"/>
+                  <text value="assign"/>
+                </properties>
+              </component>
+              <component id="29013" class="javax.swing.JCheckBox" binding="asManCheck" default-binding="true">
+                <constraints>
+                  <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font style="1"/>
+                  <foreground color="-10000022"/>
+                  <horizontalAlignment value="0"/>
+                  <horizontalTextPosition value="10"/>
+                  <text value="as manager"/>
+                </properties>
+              </component>
             </children>
           </grid>
           <grid id="925e2" layout-manager="GridLayoutManager" row-count="5" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
@@ -223,7 +213,7 @@
                   <text value="project"/>
                 </properties>
               </component>
-              <component id="be704" class="javax.swing.JComboBox" binding="projectUnassignBox">
+              <component id="be704" class="javax.swing.JComboBox" binding="unassignFromBox">
                 <constraints>
                   <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -233,7 +223,9 @@
                 <constraints>
                   <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
-                <properties/>
+                <properties>
+                  <model/>
+                </properties>
               </component>
             </children>
           </grid>

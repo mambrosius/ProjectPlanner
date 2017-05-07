@@ -22,11 +22,11 @@ public class AdministratorUi extends JFrame {
     private JTable projectTable;
     private JTable developerTable;
 
-    private JCheckBox asManagerCheckBox;
+    private JCheckBox asManCheck;
     private JComboBox registerTypeBox;
     private JComboBox unregisterTypeBox;
-    private JComboBox<Object> projectAssignBox;
-    private JComboBox<Object> projectUnassignBox;
+    private JComboBox<Object> assignToBox;
+    private JComboBox<Object> unassignFromBox;
     private JComboBox<Object> devAssignBox;
     private JComboBox<Object> devUnassignBox;
     private JComboBox<Object> unregisterBox;
@@ -53,7 +53,7 @@ public class AdministratorUi extends JFrame {
 
         unregisterButton.addActionListener(e -> {
             try {
-                admin.unregister(unregisterTypeBox.getSelectedItem(), unregisterBox.getSelectedItem().toString());
+                admin.unregister(unregisterTypeBox.getSelectedItem(), unregisterBox.getSelectedItem());
             } catch (CustomException ex) {
                 showMessageDialog(ex.getMessage());
             } finally {
@@ -63,8 +63,7 @@ public class AdministratorUi extends JFrame {
 
         assignButton.addActionListener(e -> {
             try {
-                admin.assign(projectAssignBox.getSelectedItem(), devAssignBox.getSelectedItem(), asManagerCheckBox.isSelected());
-                updateView();
+                admin.assign(getAssignTo(), getDevAssign(), asManCheck.isSelected());
             } catch (CustomException ex) {
                 showMessageDialog(ex.getMessage());
             } finally {
@@ -73,26 +72,13 @@ public class AdministratorUi extends JFrame {
         });
 
         unassignButton.addActionListener(e -> {
-            try {
-                admin.unassignDeveloper(devUnassignBox.getSelectedItem().toString(), projectUnassignBox.getSelectedItem().toString());
-                updateView();
-            } catch (CustomException ex) {
-                showMessageDialog(ex.getMessage());
-            }
+            admin.unassign(getUnassignFrom(), devUnassignBox.getSelectedItem().toString());
+            updateView();
         });
 
-        projectAssignBox.addActionListener(e -> {
-            if (!admin.getProjects().isEmpty())
-                if (asManagerCheckBox.isSelected()) {
-                    devAssignBox.setModel(new DefaultComboBoxModel<>(admin.getDevelopers().keySet().toArray()));
-                } else {
-                    devAssignBox.setModel(new DefaultComboBoxModel<>(admin.getAvailableDevelopers(projectAssignBox.getSelectedItem())));
-                }
-        });
-
-        projectUnassignBox.addActionListener(e -> {
-            if (!admin.getProjects().isEmpty())
-                devUnassignBox.setModel(new DefaultComboBoxModel<>(admin.getAssignedDevelopers(projectAssignBox.getSelectedItem().toString())));
+        assignToBox.addActionListener(e -> {
+            updateManCheck();
+            asManCheck.revalidate();
         });
 
         registerTypeBox.addActionListener(e -> {
@@ -100,22 +86,30 @@ public class AdministratorUi extends JFrame {
                 registerLabel.setText("initials");
             else
                 registerLabel.setText("name");
-        });
-
-        unregisterTypeBox.addActionListener(e -> {
-            if (unregisterTypeBox.getSelectedItem().equals("developer"))
-                registerLabel.setText("initials");
-            else
-                registerLabel.setText("name");
             updateView();
         });
 
-        asManagerCheckBox.addActionListener(e -> {
-            if (!admin.getProjects().isEmpty())
-                if (asManagerCheckBox.isSelected()) {
-                    devAssignBox.setModel(new DefaultComboBoxModel<>(admin.getDevelopers().keySet().toArray()));
+        unregisterTypeBox.addActionListener(e -> {
+            if (unregisterTypeBox.getSelectedItem().equals("project")) {
+                unregisterBox.setModel(new DefaultComboBoxModel<>(admin.getProjects()));
+                registerLabel.setText("name");
+            } else {
+                unregisterBox.setModel(new DefaultComboBoxModel<>(admin.getDevelopers()));
+                registerLabel.setText("initials");
+            }
+        });
+
+        unassignFromBox.addActionListener(e -> {
+            if (admin.getProjects().length > 0)
+                devUnassignBox.setModel(new DefaultComboBoxModel<>(admin.getAssignedDevelopers(getUnassignFrom())));
+        });
+
+        asManCheck.addActionListener(e -> {
+            if (admin.getProjects().length > 0)
+                if (asManCheck.isSelected()) {
+                    devAssignBox.setModel(new DefaultComboBoxModel<>(admin.getDevelopers()));
                 } else {
-                    devAssignBox.setModel(new DefaultComboBoxModel<>(admin.getAvailableDevelopers(projectAssignBox.getSelectedItem())));
+                    devAssignBox.setModel(new DefaultComboBoxModel<>(admin.getAvailableDevelopers(getAssignTo())));
                 }
         });
     }
@@ -133,36 +127,58 @@ public class AdministratorUi extends JFrame {
 
         projectTable.setModel(projectTableModel);
         developerTable.setModel(developerTableModel);
-
         registerPanel.getRootPane().setDefaultButton(registerButton);
 
         updateView();
     }
 
     public void updateView() {
+        inputTextField.setText("");
         admin.updateProjectTable(projectTableModel);
         admin.updateDeveloperTable(developerTableModel);
 
-        inputTextField.setText("");
+        unregisterTypeBox.revalidate();
 
-        projectAssignBox.setModel(new DefaultComboBoxModel<>(admin.getProjects().keySet().toArray()));
-        if (!admin.getProjects().isEmpty()) {
-            devAssignBox.setModel(new DefaultComboBoxModel<>(admin.getAvailableDevelopers(projectAssignBox.getSelectedItem())));
-            if (admin.getProjects().get(projectAssignBox.getSelectedItem().toString()).hasManager()) {
-                asManagerCheckBox.setSelected(false);
-                asManagerCheckBox.setVisible(false);
-            } else
-                asManagerCheckBox.setVisible(true);
+        assignToBox.setModel(new DefaultComboBoxModel<>(admin.getProjects()));
+        unassignFromBox.setModel(new DefaultComboBoxModel<>(admin.getProjects()));
+
+        if (admin.getProjects().length > 0) {
+            updateManCheck();
+            if (asManCheck.isSelected())
+                devAssignBox.setModel(new DefaultComboBoxModel<>(admin.getDevelopers()));
+            else
+                devAssignBox.setModel(new DefaultComboBoxModel<>(admin.getAvailableDevelopers(getAssignTo())));
+            devUnassignBox.setModel(new DefaultComboBoxModel<>(admin.getAssignedDevelopers(getUnassignFrom())));
         }
-        projectUnassignBox.setModel(new DefaultComboBoxModel<>(admin.getProjects().keySet().toArray()));
-        if (!admin.getProjects().isEmpty())
-            devUnassignBox.setModel(new DefaultComboBoxModel<>(admin.getAssignedDevelopers(projectUnassignBox.getSelectedItem().toString())));
 
-        if (unregisterTypeBox.getSelectedItem().equals("project"))
-            unregisterBox.setModel(new DefaultComboBoxModel<>(admin.getProjects().keySet().toArray()));
-        else
-            unregisterBox.setModel(new DefaultComboBoxModel<>(admin.getDevelopers().keySet().toArray()));
+        if (unregisterTypeBox.getSelectedItem().equals("project")) {
+            unregisterBox.setModel(new DefaultComboBoxModel<>(admin.getProjects()));
+            registerLabel.setText("name");
+        } else {
+            unregisterBox.setModel(new DefaultComboBoxModel<>(admin.getDevelopers()));
+            registerLabel.setText("initials");
+        }
     }
+
+    private void updateManCheck() {
+        Boolean hasManager = admin.getProject(getAssignTo()).hasManager();
+        asManCheck.setVisible(!hasManager);
+        if (hasManager)
+            asManCheck.setSelected(false);
+    }
+
+    private String getDevAssign() {
+        return devAssignBox.getSelectedItem().toString();
+    }
+
+    private String getAssignTo() {
+        return assignToBox.getSelectedItem().toString();
+    }
+
+    private String getUnassignFrom() {
+        return unassignFromBox.getSelectedItem().toString();
+    }
+
     private void showMessageDialog(String message) {
         JOptionPane.showMessageDialog(null, message);
     }

@@ -19,8 +19,8 @@ public class ProjectTest extends ProjectTestSetup {
         List<Developer> test = pro.getDevelopers();
 
 
-        assertEquals("bran",test.get(0).getInitials());
-        assertEquals("moaa",test.get(1).getInitials());
+        assertEquals("bran",test.getDate(0).getInitials());
+        assertEquals("moaa",test.getDate(1).getInitials());
    }
 
     // Tester hvor en udvikler ud af 4 bliver unassignet af et projekt
@@ -44,13 +44,13 @@ public class ProjectTest extends ProjectTestSetup {
         assertEquals(4,test.size());
 
         //Vi unassigner nu "bran" af projeket
-        pro.unassignDeveloper("bran");
+        pro.unassign("bran");
 
         //Tjekker om "bran" er unassignet af projektet ved at se om der er 3 personer assignet til projektet
         assertEquals(3,test.size());
-        assertEquals("moaa",test.get(0).getInitials());
-        assertEquals("bamo",test.get(1).getInitials());
-        assertEquals("moba",test.get(2).getInitials());
+        assertEquals("moaa",test.getDate(0).getInitials());
+        assertEquals("bamo",test.getDate(1).getInitials());
+        assertEquals("moba",test.getDate(2).getInitials());
     }
 
     //Tilføje aktiviteter til projekt
@@ -85,11 +85,11 @@ public class ProjectTest extends ProjectTestSetup {
         pro.removeActivity("ledelse");
 
         //Herefter tjekker vi om de er blevet slettet
-        assertEquals("krav",act.get(0).getName());
-        assertEquals("analyse",act.get(1).getName());
-        assertEquals("tests",act.get(2).getName());
-        assertEquals("design",act.get(3).getName());
-        assertEquals("extratest",act.get(4).getName());
+        assertEquals("krav",act.getDate(0).getName());
+        assertEquals("analyse",act.getDate(1).getName());
+        assertEquals("tests",act.getDate(2).getName());
+        assertEquals("design",act.getDate(3).getName());
+        assertEquals("extratest",act.getDate(4).getName());
     }
 
     //Deklare en manager

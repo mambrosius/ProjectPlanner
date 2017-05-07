@@ -86,7 +86,7 @@ public class Developer {
         for (int i = 0; i < developers.size(); i++) {
             developerData[i][0] = developers.get(i).getInitials();
             developerData[i][1] = developers.get(i).getActivityMap().size();
-            //developerData[i][2] = developers.get(i).isManager();
+            //developerData[i][2] = developers.getDate(i).isManager();
         }
 
         return developerData;

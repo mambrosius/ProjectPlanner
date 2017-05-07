@@ -34,8 +34,8 @@ public class ActivityTest {
         List<Developer> test1 = act1.getDevelopers();
 
         //Ser om de er blevet tilføjet
-        assertEquals("bran",test1.get(0).getInitials());
-        assertEquals("bamo",test1.get(1).getInitials());
+        assertEquals("bran",test1.getDate(0).getInitials());
+        assertEquals("bamo",test1.getDate(1).getInitials());
 
 
         //Tilføjer desuden alle 3 udviklere til act2
@@ -45,9 +45,9 @@ public class ActivityTest {
         List<Developer> test2 = act2.getDevelopers();
 
         //Ser om alle 3 udviklere er blevet tilføjet
-        assertEquals("bran",test2.get(0).getInitials());
-        assertEquals("moaa",test2.get(1).getInitials());
-        assertEquals("bamo",test2.get(2).getInitials());
+        assertEquals("bran",test2.getDate(0).getInitials());
+        assertEquals("moaa",test2.getDate(1).getInitials());
+        assertEquals("bamo",test2.getDate(2).getInitials());
 
         //Tilføjer 2 udviklere til en aktivitet i pro2
         pro2.addDeveloper("bran");
@@ -90,7 +90,7 @@ public class ActivityTest {
 
         //Se om udviklerne er assignet aktiviteten for det pågældende projekt
         assertEquals(2,test1.size());
-        assertEquals("bamo",test2.get(0).getInitials());
+        assertEquals("bamo",test2.getDate(0).getInitials());
         assertEquals(2,test3.size());
 
         //Fjerner en udvikler i aktiviteterne
