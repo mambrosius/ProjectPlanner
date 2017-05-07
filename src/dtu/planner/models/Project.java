@@ -92,4 +92,13 @@ public class Project {
 
         return projectData;
     }
+
+    public Boolean addDeveloperIfAbsent(String initials) {
+        return developerMap.putIfAbsent(initials, new Developer(initials)) == null;
+    }
+
+
+    public boolean addActivityIfAbsent(String activityName) {
+        return activityMap.putIfAbsent(activityName, new Activity(activityName, name)) == null;
+    }
 }

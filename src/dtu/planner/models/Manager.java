@@ -32,32 +32,36 @@ public class Manager {
         this.model = model;
     }
 
-    public void addActivity(String name, String project) throws CustomException {
-        if (name != null)
-            if (name.equals(""))
-                throw new CustomException("Missing input");
-            else if (getProject(project).addActivity(name) != null)
-                throw new CustomException(name + " already exists");
+    public void register(String selectedResp, String activityName) throws CustomException {
+        if (activityName.equals(""))
+            throw new CustomException("no input");
+        if (!respMap.get(selectedResp).addActivityIfAbsent(activityName))
+            throw new CustomException(activityName + " already exists");
     }
 
-    public void removeActivity(String name, String project, int option) throws CustomException {
-        if (option == JOptionPane.YES_OPTION)
-            getProject(project).removeActivity(name);
+    public void unregister(String selectedResp, String activityName) throws CustomException {
+        if (activityName == null)
+            throw new CustomException("select an activity");
+        getProject(selectedResp).removeActivity(activityName);
     }
 
-    public void assignActivity(String initials, String activity, String project) {
-        if (initials != null)
-            getActivity(activity, project).addDeveloper(getDeveloper(initials, project));
+    public void assign(String resp, String activityName, String initials) throws CustomException {
+        if (resp == null || activityName == null || initials == null)
+            throw new CustomException("select an activity and a developer");
+        getActivity(activityName, resp).addDeveloper(getDeveloper(initials, resp));
     }
 
-    public void unassignDeveloper(String initials, String activity, String project) throws CustomException {
-        if (initials != null)
-            getActivity(activity, project).removeDeveloper(initials);
+    public void unassign(String resp, String activityName, String initials) throws CustomException {
+        if (resp == null || activityName == null || initials == null)
+            throw new CustomException("select a project and a developer");
+        getActivity(activityName, resp).removeDeveloper(initials);
     }
 
     public void setEstimatedHours(Double hours, String name, String project) {
         getActivity(name, project).setEstimatedHours(hours);
     }
+
+    // TODO: do cleanup below
 
     /*
     void setStart(String activity, Calendar date) {
@@ -87,8 +91,6 @@ public class Manager {
         respMap.remove(project);
     }
 
-
-
     private Developer getDeveloper(String initials, String project) {
         return getProject(project).getDeveloperMap().get(initials);
     }
@@ -97,15 +99,6 @@ public class Manager {
         if (getProject(project).getDeveloperMap().isEmpty())
             throw new CustomException("could not find any developers");
         return getProject(project).getDeveloperMap().keySet().toArray();
-    }
-
-    public Object[] getAvailableDevelopers(String activity, String project) throws CustomException {
-
-        List<String> availableDevelopers = new ArrayList<>(getProject(project).getDeveloperMap().keySet());
-        availableDevelopers.removeAll(getActivity(activity, project).getDeveloperMap().keySet());
-        if (availableDevelopers.size() == 0)
-            throw new CustomException("could not find any developers");
-        return  availableDevelopers.toArray();
     }
 
     private Activity getActivity(String activity, String project) {
@@ -123,7 +116,6 @@ public class Manager {
     public boolean hasActivity(String project) {
         return !getProject(project).getActivityMap().isEmpty();
     }
-
 
     public Object[][] getActivityData(String project) {
         return Activity.getData(respMap.get(project).getActivityMap());
@@ -148,19 +140,27 @@ public class Manager {
         devUi.dispose();
     }
 
-    public Object[] getActivityDevelopers(String activity, String project) throws CustomException {
-        Object[] developers = getActivity(activity, project).getDeveloperMap().keySet().toArray();
-        if (developers.length == 0)
-            throw new CustomException("could not find any developers");
-        return developers;
-    }
-
     public void refreshTab(int index, ManagerUi manUi) {
         if (index == 0)
-            manUi.update();
+            manUi.updateView();
         else if (index == 1)
             devUi.update();
         else
             adminUi.updateView();
+    }
+
+    public Object[] getActivities(String selectedResp) {
+        return respMap.get(selectedResp).getActivityMap().keySet().toArray();
+    }
+
+    public Object[] getAvailableDevs(String activity, String project) throws CustomException {
+        List<String> availableDevelopers = new ArrayList<>(getProject(project).getDeveloperMap().keySet());
+        if (activity != null)
+            availableDevelopers.removeAll(getActivity(activity, project).getDeveloperMap().keySet());
+        return  availableDevelopers.toArray();
+    }
+
+    public Object[] getAssignedDevs(String activityName, String resp) throws CustomException {
+        return getProject(resp).getActivityMap().get(activityName).getDeveloperMap().keySet().toArray();
     }
 }

@@ -5,7 +5,6 @@ import dtu.planner.models.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -15,27 +14,31 @@ public class ManagerUi extends JFrame {
 
     private Manager man;
 
-    private JPanel managerMainPanel;
+    private JPanel manMainPanel;
     private JTabbedPane managerMenu;
 
     private JLabel dateLabel;
     private JLabel initialLabel;
+    private JTextField inputTextField;
 
     private JButton resetButton;
-    private JButton addActivityButton;
-    private JButton removeActivityButton;
-    private JButton assignDeveloperButton;
-    private JButton unassignDeveloperButton;
+    private JButton registerButton;
+    private JButton unregisterButton;
+    private JButton assignButton;
+    private JButton unassignButton;
     private JButton setEstimatedWorkHoursButton;
 
-    private static DefaultTableModel developerTableModel;
+    private static DefaultTableModel developerTableModel = new DefaultTableModel(Developer.getColumnNames(), 0);
+    private static DefaultTableModel activityTableModel = new DefaultTableModel(Activity.getColumnNames(), 0);
     private JTable developerTable;
-
-    private static DefaultTableModel activityTableModel;
     private JTable activityTable;
 
-    private DefaultComboBoxModel<Object> respBoxModel;
     private JComboBox<Object> respBox;
+    private JComboBox<Object> activityUnregisterBox;
+    private JComboBox<Object> assignToBox;
+    private JComboBox<Object> devAssignBox;
+    private JComboBox<Object> devUnassignBox;
+    private JComboBox<Object> unassignFromBox;
 
     public ManagerUi(Manager manager, ProjectPlanner projectPlanner) {
 
@@ -44,151 +47,74 @@ public class ManagerUi extends JFrame {
 
         setup();
 
-        addActivityButton.addActionListener(e -> {
+        registerButton.addActionListener(e -> {
             try {
-                String name = showInputDialog("Name activity");
-                man.addActivity(name, getSelectedResp());
-                updateActivityTable(man.getActivityData(getSelectedResp()));
+                man.register(getResp(), inputTextField.getText().toLowerCase());
             } catch (CustomException ex) {
                 showMessageDialog(ex.getMessage());
+            } finally {
+                updateView();
             }
         });
 
-        removeActivityButton.addActionListener(e -> {
+        unregisterButton.addActionListener(e -> {
             try {
-                try {
-                    String name = getSelectedActivity();
-                    man.removeActivity(name, getSelectedResp(), showConfirmDialog("remove " + name + "?"));
-                    updateActivityTable(man.getActivityData(getSelectedResp()));
-                } catch (CustomException ex) {
-                    showMessageDialog(ex.getMessage());
-                }
-            } catch (ArrayIndexOutOfBoundsException ex) {
-
+                man.unregister(getResp(), getSelectedActivity());
+            } catch (CustomException ex) {
+                showMessageDialog(ex.getMessage());
+            } finally {
+                updateView();
             }
         });
 
-        assignDeveloperButton.addActionListener(e -> {
+        assignButton.addActionListener(e -> {
             try {
-                String name = getSelectedActivity();
-                try {
-                    String initials = showInputBoxDialog("Select developer",
-                            man.getAvailableDevelopers(name, getSelectedResp()));
-                    man.assignActivity(initials, name, getSelectedResp());
-                    updateDeveloperTable(man.getDeveloperData(getSelectedResp()));
-                    updateActivityTable(man.getActivityData(getSelectedResp()));
-                } catch (Exception ex) {
-                    showMessageDialog(ex.getMessage());
-                }
-            } catch (ArrayIndexOutOfBoundsException ex) {
-                showMessageDialog("select an activity");
+                man.assign(getResp(), getAssignTo(), getInitialsAssign());
+            } catch (CustomException ex) {
+                showMessageDialog(ex.getMessage());
+            } finally {
+                updateDeveloperTable(man.getDeveloperData(getResp()));
+                updateActivityTable(man.getActivityData(getResp()));
+                updateDevUnassignBox();
+                updateDevAssignBox();
             }
         });
 
-        unassignDeveloperButton.addActionListener((ActionEvent e) -> {
+        unassignButton.addActionListener(e -> {
             try {
-                try {
-                    String resp = getSelectedResp();
-                    String activity = getSelectedActivity();
-                    String initials =
-                            showInputBoxDialog("Select developer", man.getActivityDevelopers(activity, resp));
-                    man.unassignDeveloper(initials, activity, resp);
-                    updateDeveloperTable(man.getDeveloperData(getSelectedResp()));
-                    updateActivityTable(man.getActivityData(getSelectedResp()));
-                } catch (CustomException ex) {
-                    showMessageDialog(ex.getMessage());
-                }
-            } catch (ArrayIndexOutOfBoundsException ex) {
-                showMessageDialog("select an activity");
+                man.unassign(getResp(), getUnassignFrom(), getInitialsUnassign());
+            } catch (CustomException ex) {
+                showMessageDialog(ex.getMessage());
+            } finally {
+                updateDeveloperTable(man.getDeveloperData(getResp()));
+                updateActivityTable(man.getActivityData(getResp()));
+                updateDevUnassignBox();
+                updateDevAssignBox();
             }
         });
 
+        // TODO: do cleanup below
         setEstimatedWorkHoursButton.addActionListener(e -> {
-
             try {
                 String name = getSelectedActivity();
                 Double hours = Double.parseDouble(showInputDialog("type work hours as x.x"));
-                man.setEstimatedHours(hours, name, getSelectedResp());
-                updateActivityTable(man.getActivityData(getSelectedResp()));
+                man.setEstimatedHours(hours, name, getResp());
+                updateActivityTable(man.getActivityData(getResp()));
             } catch (ArrayIndexOutOfBoundsException ex) {
                 showMessageDialog("select an activity");
             }
         });
 
-
-        managerMenu.addChangeListener(e -> {
-            man.refreshTab(managerMenu.getSelectedIndex(), this);
-
-            /*
-            man.refreshTap(managerMenu.getTitleAt(managerMenu.getSelectedIndex()));
-            managerMenu.getSelectedComponent()
-                    managerMenu.ta
-            /*
-            String manSel = ;
-            switch (manSel) {
-                case "manager":
-                    updateActivityTable(man.getActivityData(getSelectedResp()));
-                    updateDeveloperTable(man.getDeveloperData(getSelectedResp()));
-                    break;
-                case "developer":
-
-                    //devGui.updateActivityTable();
-                    break;
-                default:
-                    adminGui.updateProjectTable();
-                    adminGui.updateDeveloperTable();
-                    break;
-            }
-            */
-        });
-
-        respBox.addActionListener(e -> {
-            updateActivityTable(man.getActivityData(getSelectedResp()));
-            updateDeveloperTable(man.getDeveloperData(getSelectedResp()));
-        });
+        respBox.addActionListener(e -> updateView());
+        assignToBox.addActionListener(e -> updateDevAssignBox());
+        unassignFromBox.addActionListener(e -> updateDevUnassignBox());
+        managerMenu.addChangeListener(e -> man.refreshTab(managerMenu.getSelectedIndex(), this));
 
         this.addWindowListener(new WindowAdapter(){
             public void windowClosing(WindowEvent we){
                 man.dispose();
             }
         });
-
-
-    }
-
-    private void setup() {
-        setContentPane(managerMainPanel);
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        pack();
-        setSize(1100, 600);
-        setLocationRelativeTo(null);
-
-        respBoxModel = new DefaultComboBoxModel<>(man.getRespMap().keySet().toArray());
-        respBox.setModel(respBoxModel);
-
-        /*for (String resp : man.getRespMap().keySet())
-            respBoxModel.addElement(resp);*/
-
-        managerMenu.addTab("developer", man.setupDeveloperTap());
-        managerMenu.addTab("administrator", man.setupAdminTap());
-
-        developerTableModel = new DefaultTableModel(Developer.getColumnNames(), 0);
-        developerTable.setModel(developerTableModel);
-        activityTableModel = new DefaultTableModel(Activity.getColumnNames(), 0);
-        activityTable.setModel(activityTableModel);
-
-        if (man.hasDeveloper(getSelectedResp()))
-            updateDeveloperTable(man.getDeveloperData(getSelectedResp()));
-
-        if (man.hasActivity(getSelectedResp()))
-            updateActivityTable(man.getActivityData(getSelectedResp()));
-
-        dateLabel.setText(date.toString());
-        initialLabel.setText(man.getInitials());
-    }
-
-    public int showConfirmDialog(String message) {
-        return JOptionPane.showConfirmDialog(null, message, "Warning", JOptionPane.YES_NO_OPTION);
     }
 
     public String showInputDialog(String message) {
@@ -199,11 +125,6 @@ public class ManagerUi extends JFrame {
         JOptionPane.showMessageDialog(null, message);
     }
 
-    private String showInputBoxDialog(String message, Object[] keys) {
-        return (String) JOptionPane.showInputDialog(null, message, "Select",
-                JOptionPane.INFORMATION_MESSAGE, null, keys, "");
-    }
-
     public void updateActivityTable(Object[][] activityData) {
         activityTableModel.setDataVector(activityData, Activity.getColumnNames());
     }
@@ -212,19 +133,102 @@ public class ManagerUi extends JFrame {
         developerTableModel.setDataVector(developerData, Developer.getColumnNames());
     }
 
-    private String getSelectedResp() {
+    private String getSelectedActivity() {
+        return activityUnregisterBox.getSelectedItem().toString();
+    }
+
+    public void updateView() {
+
+        updateRespBox();
+        updateAssignToBox();
+        updateUnassignFromBox();
+        updateActivityUnregisterBox();
+        updateDevAssignBox();
+        updateDevUnassignBox();
+
+        if (man.hasDeveloper(getResp()))
+            updateDeveloperTable(man.getDeveloperData(getResp()));
+        if (man.hasActivity(getResp()))
+            updateActivityTable(man.getActivityData(getResp()));
+
+        inputTextField.setText("");
+    }
+
+    private void setup() {
+        setContentPane(manMainPanel);
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        pack();
+        setSize(1100, 600);
+        setLocationRelativeTo(null);
+
+        managerMenu.addTab("developer", man.setupDeveloperTap());
+        managerMenu.addTab("administrator", man.setupAdminTap());
+
+        dateLabel.setText(date.toString());
+        initialLabel.setText(man.getInitials());
+        this.getRootPane().setDefaultButton(registerButton);
+
+        developerTable.setModel(developerTableModel);
+        activityTable.setModel(activityTableModel);
+
+        updateView();
+    }
+
+    private String getResp() {
         return respBox.getSelectedItem().toString();
     }
 
-    private String getSelectedActivity() {
-        return (String) activityTable.getValueAt(activityTable.getSelectedRow(),0);
+    private String getAssignTo() {
+        return assignToBox.getSelectedItem().toString();
     }
 
-    public void update() {
-        updateDeveloperTable(man.getDeveloperData(getSelectedResp()));
-        updateActivityTable(man.getActivityData(getSelectedResp()));
+    private String getUnassignFrom() {
+        return unassignFromBox.getSelectedItem().toString();
+    }
 
-        respBoxModel = new DefaultComboBoxModel<>(man.getRespMap().keySet().toArray());
-        respBox.setModel(respBoxModel);
+    private String getInitialsAssign() {
+        return devAssignBox.getSelectedItem().toString();
+    }
+
+    private String getInitialsUnassign() {
+        return devUnassignBox.getSelectedItem().toString();
+    }
+
+    private void updateRespBox() {
+        respBox.setModel(new DefaultComboBoxModel<>(man.getRespMap().keySet().toArray()));
+    }
+
+    private void updateActivityUnregisterBox() {
+        activityUnregisterBox.setModel(new DefaultComboBoxModel<>(man.getActivities(getResp())));
+    }
+
+    private void updateAssignToBox() {
+        assignToBox.setModel(new DefaultComboBoxModel<>(man.getActivities(getResp())));
+    }
+
+    private void updateUnassignFromBox() {
+        unassignFromBox.setModel(new DefaultComboBoxModel<>(man.getActivities(getResp())));
+    }
+
+    private void updateDevAssignBox() {
+        try {
+            if (man.hasActivity(getResp())) {
+                devAssignBox.setModel(new DefaultComboBoxModel<>(man.getAvailableDevs(getAssignTo(), getResp())));
+            } else
+                devAssignBox.setModel(new DefaultComboBoxModel<>());
+        } catch (CustomException ex) {
+            showMessageDialog(ex.getMessage());
+        }
+    }
+
+    private void updateDevUnassignBox() {
+        try {
+            if (man.hasActivity(getResp()) ) {
+                devUnassignBox.setModel(new DefaultComboBoxModel<>(man.getAssignedDevs(getUnassignFrom(), getResp())));
+            } else
+                devUnassignBox.setModel(new DefaultComboBoxModel<>());
+        } catch (CustomException ex) {
+            showMessageDialog(ex.getMessage());
+        }
     }
 }
