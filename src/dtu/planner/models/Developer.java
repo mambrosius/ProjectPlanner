@@ -11,13 +11,12 @@ import java.util.Map;
 public class Developer {
 
     private String initials;
+    private Absence absenceType;
     private ProjectPlanner model;
 
+    // private Map<String, Absence> absences;
     private Map<String, Activity> activityMap = new HashMap<>();
     private Map<String, Activity> reqMap = new HashMap<>();
-
-    private Absence absenceType;
-    // private Map<String, Absence> absences;
 
     private static final String[] columnNames = new String[]{"initials", "activities", "status"};
 
@@ -79,16 +78,6 @@ public class Developer {
         }
     }
 
-    /*
-    Boolean isAbsent(Calendar date) {
-
-    }
-
-    void registerAbsence(AbsenceType type, Calendar date) {
-
-    }
-    */
-
     public static Object[][] getData(Map<String, Developer> developerMap) {
 
         List<Developer> developers = new ArrayList<>(developerMap.values());
@@ -137,4 +126,7 @@ public class Developer {
     public String toString() {
         return getInitials();
     }
+
+    //Boolean isAbsent(Calendar date) {}
+    //void registerAbsence(AbsenceType type, Calendar date) {}
 }

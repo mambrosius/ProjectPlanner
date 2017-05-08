@@ -8,10 +8,7 @@ import static org.junit.Assert.*;
 
 public class DeveloperTest {
 
-
     ProjectPlanner model = new ProjectPlanner();
-    Administrator admin = new Administrator(model);
-
     private Developer sut = new Developer("adm");
 
     @Before
@@ -112,9 +109,7 @@ public class DeveloperTest {
                 activity.addDeveloper(this);
             reqMap.remove(activity.getName());
         }
-
         */
-
     }
 
     @Test

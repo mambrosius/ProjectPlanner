@@ -15,12 +15,15 @@ public class Activity {
 
     private Map<String, Developer> developerMap = new HashMap<>();
 
-    private static final String[] columnNames = new String[]{"name", "project", "developers", "estimated hours", "remaining hours"};
+    private static final String[] columnNames =
+            new String[]{"name", "project", "developers", "estimated hours", "remaining hours"};
 
-    //private startWeek;
-    //private endWeek;
-    //private workHoursEstimated;
-    //private workHoursRemaining;
+    /*
+    private startWeek;
+    private endWeek;
+    private workHoursEstimated;
+    private workHoursRemaining;
+    */
 
     public Activity(String name, String project) {
         this.name = name;
@@ -31,6 +34,14 @@ public class Activity {
 
     public String getName() {
         return name;
+    }
+
+    public String toString() {
+        return getName();
+    }
+
+    Double getEstimatedHours() {
+        return estimatedHours;
     }
 
     public String getProjectName() {
@@ -56,17 +67,19 @@ public class Activity {
         remainingHours = estimatedHours - hoursUsed;
     }
 
-    Double getEstimatedHours() {
-        return estimatedHours;
-    }
-
     void setHoursUsed(Double hours) {
         this.hoursUsed += hours;
         remainingHours = estimatedHours - hoursUsed;
     }
 
-    public Double getHoursUsed() {
-        return hoursUsed;
+    private Double getRemainingHours() {
+        if (estimatedHours == null)
+            return null;
+        return remainingHours;
+    }
+
+    public static String[] getColumnNames() {
+        return columnNames;
     }
 
     public static Object[][] getData(Map<String, Activity> activityMap) {
@@ -82,16 +95,6 @@ public class Activity {
         return activityData;
     }
 
-    private Double getRemainingHours() {
-        if (estimatedHours == null)
-            return null;
-        return remainingHours;
-    }
-
-    public static String[] getColumnNames() {
-        return columnNames;
-    }
-
     /*
     Integer getWeeksToDeadline() {
     }
@@ -99,8 +102,4 @@ public class Activity {
     void editWorkHours(Double hours) {
     }
     */
-
-    public String toString() {
-        return getName();
-    }
 }
