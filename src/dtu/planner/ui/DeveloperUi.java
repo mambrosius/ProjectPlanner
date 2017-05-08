@@ -5,6 +5,8 @@ import dtu.planner.models.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class DeveloperUi extends JFrame {
 
@@ -32,6 +34,8 @@ public class DeveloperUi extends JFrame {
     private JButton acceptButton1;
     private JButton denyButton1;
     private JLabel replyLabel;
+    private JTextField inputTimeTextField;
+    private JComboBox<Object> logActivityBox;
 
     public DeveloperUi(Developer developer, ProjectPlanner model) {
 
@@ -41,15 +45,19 @@ public class DeveloperUi extends JFrame {
         setup();
 
         logActivityButton.addActionListener(e -> {
-            String name = (String) activityTable.getValueAt(activityTable.getSelectedRow(), 0);
-            Double hours = Double.parseDouble(JOptionPane.showInputDialog(devPanel, "log work hours"));
-            dev.logActivity(name, hours);
-            updateActivityTable(dev.getActivityData());
+            try {
+                //String name = (String) activityTable.getValueAt(activityTable.getSelectedRow(), 0);
+                dev.logActivity(getLogActivity(), inputTimeTextField.getText());
+                updateActivityTable(dev.getActivityData());
+            } catch (CustomException ex) {
+                showMessageDialog(ex.getMessage());
+            }
         });
 
         sendRequestButton.addActionListener(e -> {
             try {
-                dev.seekAssistance(getSelectedActivity(), model.getDeveloper(getSelectedDev()));
+                dev.seekAssistance(getSelectedActivity(), getSelectedDev());
+                showMessageDialog("request sent");
             } catch (CustomException ex) {
                 showMessageDialog(ex.getMessage());
             }
@@ -71,6 +79,7 @@ public class DeveloperUi extends JFrame {
             dev.replyReq(getSelectedReq(), false);
             update();
         });
+
     }
 
     private void setup() {
@@ -97,8 +106,10 @@ public class DeveloperUi extends JFrame {
     }
 
     public void update() {
-        if (dev.hasActivity())
-            updateActivityTable(dev.getActivityData());
+
+        updateActivityTable(dev.getActivityData());
+
+        inputTimeTextField.setText("");
 
         DefaultComboBoxModel<Object> activityReqModel = new DefaultComboBoxModel<>(dev.getActivities());
         activityReqBox.setModel(activityReqModel);
@@ -108,6 +119,9 @@ public class DeveloperUi extends JFrame {
                     new DefaultComboBoxModel<>(dev.getAvailableDevelopers(getSelectedActivity()));
             devReqBox.setModel(devReqModel);
         }
+
+        logActivityBox.setModel(new DefaultComboBoxModel<>(dev.getActivities()));
+
 
         DefaultComboBoxModel<Activity> replyBoxModel = new DefaultComboBoxModel<>();
 
@@ -130,15 +144,27 @@ public class DeveloperUi extends JFrame {
         }
     }
 
-    public String getSelectedActivity() {
-        return activityReqBox.getSelectedItem().toString();
+    private String getSelectedActivity() {
+        if (activityReqBox.getSelectedItem() == null)
+            return "";
+        else
+            return activityReqBox.getSelectedItem().toString();
     }
 
-    public String getSelectedDev() {
-        return devReqBox.getSelectedItem().toString();
+    private String getLogActivity() {
+        return logActivityBox.getSelectedItem().toString();
     }
 
-    public Activity getSelectedReq() {
+
+    private String getSelectedDev() {
+        if (devReqBox.getSelectedItem() == null)
+            return "";
+        else
+            return devReqBox.getSelectedItem().toString();
+
+    }
+
+    private Activity getSelectedReq() {
         return (Activity) replyBox.getSelectedItem();
     }
 
@@ -150,7 +176,7 @@ public class DeveloperUi extends JFrame {
         return temp.getProjectMap().get(project);
     }
 
-    public void showMessageDialog(String message) {
+    private void showMessageDialog(String message) {
         JOptionPane.showMessageDialog(null, message);
     }
 

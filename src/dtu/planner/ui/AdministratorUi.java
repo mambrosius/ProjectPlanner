@@ -95,8 +95,7 @@ public class AdministratorUi extends JFrame {
 
         assignToBox.addActionListener(e -> {
                 updateManCheck();
-                asManCheck.revalidate();
-        });
+                asManCheck.revalidate();});
         unassignFromBox.addActionListener(e -> updateDevUnassignBox());
         unregisterTypeBox.addActionListener(e -> updateUnregisterBox());
         asManCheck.addActionListener(e -> updateDevAssignBox());

@@ -65,6 +65,10 @@ public class Activity {
         remainingHours = estimatedHours - hoursUsed;
     }
 
+    public Double getHoursUsed() {
+        return hoursUsed;
+    }
+
     public static Object[][] getData(Map<String, Activity> activityMap) {
         List<Activity> activities = new ArrayList<>(activityMap.values());
         Object[][] activityData = new Object[activities.size()][columnNames.length];

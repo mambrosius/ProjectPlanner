@@ -2,6 +2,7 @@ package dtu.planner.models;
 
 import dtu.planner.exceptions.CustomException;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +15,8 @@ public class Developer {
 
     private Map<String, Activity> activityMap = new HashMap<>();
     private Map<String, Activity> reqMap = new HashMap<>();
+
+    private Absence absenceType;
     // private Map<String, Absence> absences;
 
     private static final String[] columnNames = new String[]{"initials", "activities", "status"};
@@ -46,18 +49,26 @@ public class Developer {
         activityMap.remove(activity);
     }
 
-    public void logActivity(String activity, Double hours) {
-        activityMap.get(activity).setHoursUsed(hours);
+    public void logActivity(String activity, String input) throws CustomException {
+        if (!input.matches("[0.-9.]+"))
+            throw new CustomException("invalid input");
+        activityMap.get(activity).setHoursUsed(Double.parseDouble(input));
     }
 
-    public void seekAssistance(String activity, Developer dev) throws CustomException {
-        if (dev.getReqMap().containsKey(activity))
-            throw new CustomException("Request already sent");
-        dev.addRequest(activityMap.get(activity));
+    public Boolean seekAssistance(String activity, String initials) throws CustomException {
+        if (activity.equals(""))
+            throw new CustomException("need an activity");
+        if (initials.equals(""))
+            throw new CustomException("need initials");
+        if (model.getDeveloper(initials) == null)
+            throw new CustomException("developer does not exist");
+        if (model.getDeveloper(initials).getReqMap().containsKey(activity))
+            throw new CustomException("request already sent");
+        return model.getDeveloper(initials).addRequest(activityMap.get(activity));
     }
 
-    public void addRequest(Activity activity) {
-        reqMap.put(activity.getName(), activity);
+    private Boolean addRequest(Activity activity) {
+        return reqMap.putIfAbsent(activity.getName(), activity) == null;
     }
 
     public void replyReq(Activity activity, boolean accept) {

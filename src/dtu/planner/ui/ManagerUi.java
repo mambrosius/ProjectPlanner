@@ -20,8 +20,8 @@ public class ManagerUi extends JFrame {
     private JLabel dateLabel;
     private JLabel initialLabel;
     private JTextField inputTextField;
+    private JTextField timeInputField;
 
-    private JButton resetButton;
     private JButton registerButton;
     private JButton unregisterButton;
     private JButton assignButton;
@@ -39,6 +39,7 @@ public class ManagerUi extends JFrame {
     private JComboBox<Object> devAssignBox;
     private JComboBox<Object> devUnassignBox;
     private JComboBox<Object> unassignFromBox;
+    private JComboBox<Object> activityTimeBox;
 
     public ManagerUi(Manager manager, ProjectPlanner projectPlanner) {
 
@@ -93,43 +94,39 @@ public class ManagerUi extends JFrame {
             }
         });
 
-        // TODO: do cleanup below
         setEstimatedWorkHoursButton.addActionListener(e -> {
             try {
-                String name = getSelectedActivity();
-                Double hours = Double.parseDouble(showInputDialog("type work hours as x.x"));
-                man.setEstimatedHours(hours, name, getResp());
+                man.setEstimatedHours(timeInputField.getText(), getActivityTime(), getResp());
+            } catch (CustomException ex) {
+                showMessageDialog(ex.getMessage());
+            } finally {
                 updateActivityTable(man.getActivityData(getResp()));
-            } catch (ArrayIndexOutOfBoundsException ex) {
-                showMessageDialog("select an activity");
+                timeInputField.setText("");
             }
         });
 
+        // TODO: do cleanup below
         respBox.addActionListener(e -> updateView());
         assignToBox.addActionListener(e -> updateDevAssignBox());
         unassignFromBox.addActionListener(e -> updateDevUnassignBox());
         managerMenu.addChangeListener(e -> man.refreshTab(managerMenu.getSelectedIndex(), this));
 
-        this.addWindowListener(new WindowAdapter(){
-            public void windowClosing(WindowEvent we){
+        this.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent we) {
                 man.dispose();
             }
         });
     }
 
-    public String showInputDialog(String message) {
-        return JOptionPane.showInputDialog(message).toLowerCase();
-    }
-
-    public void showMessageDialog(String message) {
+    private void showMessageDialog(String message) {
         JOptionPane.showMessageDialog(null, message);
     }
 
-    public void updateActivityTable(Object[][] activityData) {
+    private void updateActivityTable(Object[][] activityData) {
         activityTableModel.setDataVector(activityData, Activity.getColumnNames());
     }
 
-    public void updateDeveloperTable(Object[][] developerData) {
+    private void updateDeveloperTable(Object[][] developerData) {
         developerTableModel.setDataVector(developerData, Developer.getColumnNames());
     }
 
@@ -145,6 +142,7 @@ public class ManagerUi extends JFrame {
         updateActivityUnregisterBox();
         updateDevAssignBox();
         updateDevUnassignBox();
+        updateActivityTimeBox();
 
         if (man.hasDeveloper(getResp()))
             updateDeveloperTable(man.getDeveloperData(getResp()));
@@ -152,6 +150,7 @@ public class ManagerUi extends JFrame {
             updateActivityTable(man.getActivityData(getResp()));
 
         inputTextField.setText("");
+        timeInputField.setText("");
     }
 
     private void setup() {
@@ -166,7 +165,6 @@ public class ManagerUi extends JFrame {
 
         dateLabel.setText(date.toString());
         initialLabel.setText(man.getInitials());
-        this.getRootPane().setDefaultButton(registerButton);
 
         developerTable.setModel(developerTableModel);
         activityTable.setModel(activityTableModel);
@@ -194,8 +192,12 @@ public class ManagerUi extends JFrame {
         return devUnassignBox.getSelectedItem().toString();
     }
 
+    private String getActivityTime() {
+        return activityTimeBox.getSelectedItem().toString();
+    }
+
     private void updateRespBox() {
-        respBox.setModel(new DefaultComboBoxModel<>(man.getRespMap().keySet().toArray()));
+        respBox.setModel(new DefaultComboBoxModel<>(man.getResps()));
     }
 
     private void updateActivityUnregisterBox() {
@@ -223,12 +225,16 @@ public class ManagerUi extends JFrame {
 
     private void updateDevUnassignBox() {
         try {
-            if (man.hasActivity(getResp()) ) {
+            if (man.hasActivity(getResp())) {
                 devUnassignBox.setModel(new DefaultComboBoxModel<>(man.getAssignedDevs(getUnassignFrom(), getResp())));
             } else
                 devUnassignBox.setModel(new DefaultComboBoxModel<>());
         } catch (CustomException ex) {
             showMessageDialog(ex.getMessage());
         }
+    }
+
+    private void updateActivityTimeBox() {
+        activityTimeBox.setModel(new DefaultComboBoxModel<>(man.getActivities(getResp())));
     }
 }

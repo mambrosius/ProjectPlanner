@@ -5,7 +5,6 @@ import dtu.planner.ui.AdministratorUi;
 import dtu.planner.ui.DeveloperUi;
 import dtu.planner.ui.ManagerUi;
 
-import javax.swing.*;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
@@ -20,7 +19,7 @@ public class Manager {
 
     private Map<String, Project> respMap = new HashMap<>();
 
-    public Manager(String initials) {
+    Manager(String initials) {
         this.initials = initials;
     }
 
@@ -30,6 +29,28 @@ public class Manager {
 
     public void setProjectPlanner(ProjectPlanner model) {
         this.model = model;
+    }
+
+    public ProjectPlanner getProjectPlanner() {
+        return model;
+    }
+
+    private Project getResp(String project) {
+        return respMap.get(project);
+    }
+
+    public Object[] getResps() {
+        return respMap.keySet().toArray();
+    }
+
+    void addResp(Project project) {
+        respMap.putIfAbsent(project.getName(), project);
+        respMap.get(project.getName()).setManager(initials);
+    }
+
+    void removeResp(String project) {
+        getResp(project).setManager(null);
+        respMap.remove(project);
     }
 
     public void register(String selectedResp, String activityName) throws CustomException {
@@ -42,7 +63,7 @@ public class Manager {
     public void unregister(String selectedResp, String activityName) throws CustomException {
         if (activityName == null)
             throw new CustomException("select an activity");
-        getProject(selectedResp).removeActivity(activityName);
+        getResp(selectedResp).removeActivity(activityName);
     }
 
     public void assign(String resp, String activityName, String initials) throws CustomException {
@@ -57,72 +78,55 @@ public class Manager {
         getActivity(activityName, resp).removeDeveloper(initials);
     }
 
-    public void setEstimatedHours(Double hours, String name, String project) {
-        getActivity(name, project).setEstimatedHours(hours);
+    public void setEstimatedHours(String input, String name, String project) throws CustomException {
+        if (!input.matches("[0.-9.]+"))
+            throw new CustomException("invalid input");
+        getActivity(name, project).setEstimatedHours(Double.parseDouble(input));
+    }
+
+    public double getEstimatedHours(String name, String project) {
+        return getActivity(name, project).getEstimatedHours();
     }
 
     // TODO: do cleanup below
 
-    /*
-    void setStart(String activity, Calendar date) {
-
-    }
-
-    void setEnd(String activity, Calendar data) {
-
-    }
-
-    void generateRapport(String project) {
-
-    }
-    */
-
-    public Map<String, Project> getRespMap() {
-        return respMap;
-    }
-
-    public void addResp(Project project) {
-        respMap.put(project.getName(), project);
-        respMap.get(project.getName()).setManager(initials);
-    }
-
-    public void removeResp(String project) {
-        getProject(project).setManager(null);
-        respMap.remove(project);
-    }
-
-    private Developer getDeveloper(String initials, String project) {
-        return getProject(project).getDeveloperMap().get(initials);
-    }
-
-    public Object[] getDevelopers(String project) throws CustomException {
-        if (getProject(project).getDeveloperMap().isEmpty())
-            throw new CustomException("could not find any developers");
-        return getProject(project).getDeveloperMap().keySet().toArray();
-    }
-
     private Activity getActivity(String activity, String project) {
-        return getProject(project).getActivityMap().get(activity);
-    }
-
-    private Project getProject(String project) {
-        return respMap.get(project);
-    }
-
-    public boolean hasDeveloper(String project) {
-        return !getProject(project).getDeveloperMap().isEmpty();
+        return getResp(project).getActivityMap().get(activity);
     }
 
     public boolean hasActivity(String project) {
-        return !getProject(project).getActivityMap().isEmpty();
+        return !getResp(project).getActivityMap().isEmpty();
+    }
+
+    public Object[] getActivities(String selectedResp) {
+        return getResp(selectedResp).getActivityMap().keySet().toArray();
     }
 
     public Object[][] getActivityData(String project) {
         return Activity.getData(respMap.get(project).getActivityMap());
     }
 
+    public boolean hasDeveloper(String project) {
+        return !getResp(project).getDeveloperMap().isEmpty();
+    }
+
+    private Developer getDeveloper(String initials, String project) {
+        return getResp(project).getDeveloperMap().get(initials);
+    }
+
     public Object[][] getDeveloperData(String project) {
         return Developer.getData(respMap.get(project).getDeveloperMap());
+    }
+
+    public Object[] getAvailableDevs(String activity, String project) throws CustomException {
+        List<String> availableDevelopers = new ArrayList<>(getResp(project).getDeveloperMap().keySet());
+        if (activity != null)
+            availableDevelopers.removeAll(getActivity(activity, project).getDeveloperMap().keySet());
+        return  availableDevelopers.toArray();
+    }
+
+    public Object[] getAssignedDevs(String activityName, String resp) throws CustomException {
+        return getActivity(activityName, resp).getDeveloperMap().keySet().toArray();
     }
 
     public Component setupDeveloperTap() {
@@ -149,18 +153,18 @@ public class Manager {
             adminUi.updateView();
     }
 
-    public Object[] getActivities(String selectedResp) {
-        return respMap.get(selectedResp).getActivityMap().keySet().toArray();
+    // TODO: implement if time
+    /*
+    void setStart(String activity, Calendar date) {
+
     }
 
-    public Object[] getAvailableDevs(String activity, String project) throws CustomException {
-        List<String> availableDevelopers = new ArrayList<>(getProject(project).getDeveloperMap().keySet());
-        if (activity != null)
-            availableDevelopers.removeAll(getActivity(activity, project).getDeveloperMap().keySet());
-        return  availableDevelopers.toArray();
+    void setEnd(String activity, Calendar data) {
+
     }
 
-    public Object[] getAssignedDevs(String activityName, String resp) throws CustomException {
-        return getProject(resp).getActivityMap().get(activityName).getDeveloperMap().keySet().toArray();
+    void generateRapport(String project) {
+
     }
+    */
 }

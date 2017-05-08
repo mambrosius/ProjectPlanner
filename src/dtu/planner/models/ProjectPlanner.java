@@ -1,5 +1,6 @@
 package dtu.planner.models;
 
+import dtu.planner.exceptions.CustomException;
 import dtu.planner.ui.AdministratorUi;
 import dtu.planner.ui.DeveloperUi;
 import dtu.planner.ui.ManagerUi;
@@ -64,7 +65,7 @@ public class ProjectPlanner {
 
     public void removeManager(String initials, String project) {
         managerMap.get(initials).removeResp(project);
-        if (managerMap.get(initials).getRespMap().isEmpty())
+        if (managerMap.get(initials).getResps().length == 0)
             managerMap.remove(initials);
     }
 

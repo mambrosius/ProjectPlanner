@@ -26,7 +26,7 @@ public class Project {
         this.name = name;
     }
 
-    public String getProjectNo() {
+    private String getProjectNo() {
         return projectNo;
     }
 
